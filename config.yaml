@@ -1,0 +1,380 @@
+watch_stylesheet: true
+watch_config: true
+debug: false
+komorebi:
+  start_command: "komorebic start --whkd --masir"
+  stop_command: "komorebic stop --whkd --masir"
+  reload_command: "komorebic stop -ya -whkd && komorebic start --whkd --masir"
+bars:
+  primary-bar:
+    enabled: true
+    screens: ["*"]
+    class_name: "yasb-bar"
+    alignment:
+      position: "top"
+      center: true
+    blur_effect:
+      enabled: true
+      acrylic: true
+      dark_mode: false
+      round_corners: true
+      border_color: None
+    window_flags:
+      always_on_top: true
+      windows_app_bar: true
+      hide_on_fullscreen: false
+    dimensions:
+      width: "100%"
+      height: 32
+    padding:
+      top: 4
+      left: 6
+      bottom: -10
+      right: 6
+    widgets:
+      left: ["launchpad", "komorebi_control", "komorebi_active_layout", "cava"]
+      center: ["komorebi_workspaces"]
+      right: ["clock", "wallpapers", "whkd", "notifications", "open_meteo", "wifi", "battery", "volume", "power_menu"]
+widgets:
+  komorebi_workspaces:
+    type: "komorebi.workspaces.WorkspaceWidget"
+    options:
+      label_offline: "\u23fc Offline"
+      label_workspace_btn: "󱨈"
+      label_workspace_active_btn: ""
+      label_workspace_populated_btn: ""
+      label_default_name: ""
+      label_zero_index: true
+      hide_empty_workspaces: false
+      hide_if_offline: true
+      animation: true
+    app_icons: 
+      enabled_populated: true
+      enabled_active: true
+      size: 12
+      max_icons: 0
+      hide_label: false
+      hide_duplicates: false
+      hide_floating: false
+  active_window:
+    type: "yasb.active_window.ActiveWindowWidget"
+    options:
+      label: "{win[title]}"
+      label_no_window: ""
+      label_icon: true
+      label_icon_size: 14
+      max_length: 56
+      max_length_ellipsis: "..."
+  clock:
+   type: "yasb.clock.ClockWidget"
+   options:
+    label: "<span>{icon}</span>{%I.%M %p}"
+    locale: ""
+    update_interval: 1000
+    timezones: []
+    icons:
+      clock_01 : "\udb85\udc3f"
+      clock_02 : "\udb85\udc40"
+      clock_03 : "\udb85\udc41"
+      clock_04 : "\udb85\udc42"
+      clock_05 : "\udb85\udc43"
+      clock_06 : "\udb85\udc44"
+      clock_07 : "\udb85\udc45"
+      clock_08 : "\udb85\udc46"
+      clock_09 : "\udb85\udc47"
+      clock_10 : "\udb85\udc48"
+      clock_11 : "\udb85\udc49"
+      clock_12 : "\udb85\udc4a"
+      clock_21 : "󱑇"
+      clock_22 : "󱑈"
+      clock_23 : "Zzz..."
+    alarm_icons:
+      enabled: "\uf0f3"
+      disabled: "\uf0a2"
+      snooze: "\uf1f6"
+    calendar: 
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "system"
+      alignment: "center"
+      direction: "down"
+      offset_top: 6
+      offset_left: 0
+      show_holidays: false
+      show_week_numbers: true
+      show_years: true
+      country_code: "AR"
+      holiday_color: "#FF6464"
+      extended: false
+  launchpad:
+   type: "yasb.launchpad.LaunchpadWidget"
+   options:
+    label: "󰜞"
+    search_placeholder: "Search apps..."
+    app_icon_size: 48
+    window:
+      fullscreen: false
+      width: 1024
+      height: 768
+      overlay_block: true
+    window_style:
+      enable_blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "system"
+    window_animation:
+      fade_in_duration: 120
+      fade_out_duration: 100
+    group_apps: false
+    callbacks:
+      on_left: "toggle_launchpad"
+  komorebi_active_layout:
+   type: "komorebi.active_layout.ActiveLayoutWidget"
+   options:
+    hide_if_offline: true
+    label: "{icon} {layout_name}"
+    layouts: ['bsp', 'columns', 'rows', 'grid', 'scrolling', 'vertical_stack', 'horizontal_stack', 'ultrawide_vertical_stack','right_main_vertical_stack']
+    layout_icons:
+      bsp: "\uebeb"
+      columns: "\uebf7"
+      rows: "\uec01"
+      grid: "\udb81\udf58"
+      scrolling: "\uebf7"
+      vertical_stack: "\uebee"
+      horizontal_stack: "\uebf0"
+      ultrawide_vertical_stack: "\uebee"
+      right_main_vertical_stack: "\uebf1"
+      monocle: "\uf06f"
+      maximized: "\uf06f"
+      floating: "\uf2d2"
+      paused: "\udb83\udf89"
+      tiling: "\udb81\ude40"
+    callbacks:
+      on_left: 'toggle_layout_menu'
+      on_middle: 'next_layout'
+      on_right: 'prev_layout'
+    layout_menu:
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "System"
+      alignment: "left"
+      direction: "down"
+      offset_top: 6
+      offset_left: 0
+      show_layout_icons: true
+  komorebi_control:
+    type: "komorebi.control.KomorebiControlWidget"
+    options:
+        label: "<span>\udb80\uddd9</span>"
+        icons:
+          start: "\uead3"
+          stop: "\uead7"
+          reload: "\uead2"
+        run_ahk: false
+        run_whkd: false
+        run_masir: false
+        show_version: true
+        komorebi_menu:
+          blur: true
+          round_corners: true
+          round_corners_type: 'normal'
+          border_color: 'System'
+          alignment: 'left'
+          direction: 'down'
+          offset_top: 6
+          offset_left: 0
+  open_meteo:
+   type: "yasb.open_meteo.OpenMeteoWidget"
+   options:
+    label: "<span>{icon}</span> {temp}"
+    label_alt: "{location}: Min {min_temp}, Max {max_temp}, Humidity {humidity}"
+    tooltip: true
+    update_interval: 600
+    hide_decimal: true
+    units: "metric"
+    callbacks:
+      on_left: "toggle_card"
+      on_middle: "do_nothing"
+      on_right: "toggle_label"
+    icons:
+      sunnyDay: "\ue30d"
+      clearNight: "\ue32b"
+      cloudyDay: "\ue312"
+      cloudyNight: "\ue311"
+      drizzleDay: "\udb81\ude7e"
+      drizzleNight: "\udb81\ude7e"
+      rainyDay: "\ue308"
+      rainyNight: "\ue333"
+      snowyDay: "\ue30a"
+      snowyNight: "\ue335"
+      foggyDay: "\ue303"
+      foggyNight: "\ue346"
+      thunderstormDay: "\ue30f"
+      thunderstormNight: "\ue338"
+      default: "\uebaa"
+    weather_card:
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "system"
+      alignment: "right"
+      direction: "down"
+      icon_size: 48
+      show_hourly_forecast: true
+      time_format: "24h"
+      hourly_point_spacing: 76
+      hourly_icon_size: 24
+      icon_smoothing: true
+      temp_line_width: 2
+      current_line_color: "#8EAEE8"
+      current_line_width: 1
+      current_line_style: "dot"
+      hourly_gradient:
+        enabled: false
+        top_color: "#8EAEE8"
+        bottom_color: "#2A3E68"
+      hourly_forecast_buttons:
+        enabled: true
+        default_view: "temperature"
+        temperature_icon: "\udb81\udd99"
+        rain_icon: "\udb81\udd96"
+        snow_icon: "\udb81\udd98"
+      weather_animation:
+        enabled: false
+        snow_overrides_rain: true
+        temp_line_animation_style: both
+        rain_effect_intensity: 1.0
+        snow_effect_intensity: 1.0
+        scale_with_chance: true
+  volume:
+   type: "yasb.volume.VolumeWidget"
+   options:
+    label: "<span>{icon}</span> {level}"
+    label_alt: "{volume}"
+    volume_icons:
+      - "\ueee8"  # Icon for muted
+      - "\uf026"  # Icon for 0-10% volume
+      - "\uf027"  # Icon for 11-30% volume
+      - "\uf027"  # Icon for 31-60% volume
+      - "\uf028"  # Icon for 61-100% volume
+    audio_menu:
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "system"
+      alignment: "right"
+      direction: "down"
+      blur: true 
+      round_corners: true 
+      round_corners_type: "normal" 
+      border_color: "system"
+      alignment: "right" 
+      direction: "down" 
+      offset_top: 6 
+      offset_left: 0 
+      show_apps: true
+      show_app_labels: false 
+      show_app_icons: true 
+      show_apps_expanded: false 
+      app_icons: 
+        toggle_down: "\uf078" 
+        toggle_up: "\uf077" 
+    callbacks:
+      on_left: "toggle_volume_menu"
+      on_right: "toggle_mute"
+  power_menu:
+   type: "yasb.power_menu.PowerMenuWidget"
+   options:
+    label: ""
+    uptime: true
+    show_user: true
+    blur: true
+    blur_background: true
+    animation_duration: 120 # Milliseconds
+    button_row: 3 # Number of buttons in a row, min 1 max 6
+    profile_image_size: 80
+    buttons:
+        restart: ["󰫈", "Reboot"]
+        shutdown: ["󰛡", "Termination"]
+        signout: ["󱠩", "Disconnect"]
+        lock: ["", "Secure Session"]
+        cancel: ["", "Cancel"]
+  cava:
+   type: "yasb.cava.CavaWidget"
+   options:
+      bar_height: 19
+      min_bar_height: 0
+      gradient: 1
+      foreground: "#89b4fa"
+      gradient_color_1: '#00ffff'
+      gradient_color_2: '#f5e0dc'
+      gradient_color_3: '#40e0d0'
+      bars_number: 10
+      bar_spacing: 2
+      bar_width: 4
+      bar_type: "bars"
+      framerate: 100
+      hide_empty: true
+  whkd:
+    type: "yasb.whkd.WhkdWidget"
+    options:
+      label: "<span>\uf11c</span>"
+  battery:
+    type: "yasb.battery.BatteryWidget"
+    options:
+      label: "<span>{icon}</span> {percent}%"
+  wifi:
+   type: "yasb.wifi.WifiWidget"
+   options:
+    label: "{wifi_icon} {wifi_strength}%"
+    update_interval: 5000
+    callbacks:
+      on_left: "toggle_menu"
+      on_middle: "exec cmd.exe /c start ms-settings:network"
+      on_right: "toggle_label"
+    ethernet_label: "<span>{wifi_icon}</span>"
+    ethernet_label_alt: "<span>{wifi_icon}</span>{ip_addr}"
+    ethernet_icon: "\ueba9"
+    get_exact_wifi_strength: false  # Optional. Will require location access permission if true.
+    wifi_icons: [
+      "\udb82\udd2e",  # Icon for 0% strength
+      "\udb82\udd1f",  # Icon for 1-24% strength
+      "\udb82\udd22",  # Icon for 25-49% strength
+      "\udb82\udd25",  # Icon for 50-74% strength
+      "\udb82\udd28"   # Icon for 75-100% strength
+    ]
+    menu_config:
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "System"
+      alignment: "right"
+      direction: "down"
+      offset_top: 6
+      offset_left: 0
+  wallpapers:
+   type: "yasb.wallpapers.WallpapersWidget"
+   options:
+    label: "<span>\udb83\ude09</span>"
+    image_path: "C:\\Users\\Dhruv\\Pictures\\Wallpapers" 
+    gallery:
+        enabled: true
+        blur: true
+        image_width: 350
+        image_per_page: 6
+        orientation: "portrait"
+        show_buttons: false
+        image_spacing: 15
+        image_corner_radius: 20
+  notifications:
+     type: "yasb.notifications.NotificationsWidget"
+     options:
+      label: "<span>\uf476</span> {count}"
+      hide_empty: true
+      tooltip: false
+      callbacks:
+        on_left: "toggle_notification"
+        on_right: "do_nothing"
+        on_middle: "toggle_label"      
