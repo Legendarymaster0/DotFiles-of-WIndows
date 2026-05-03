@@ -1,0 +1,55 @@
+format = """
+[╭](bold overlay1)-󱄅-\
+$directory\
+$git_branch\
+$git_status\
+$kubernetes \
+$time \
+\n$character"""
+
+palette = 'Catppucin'
+
+[palettes.Catppucin]
+color_fg0 = '#ebdbb2'
+color_bg0 = '#3C4841'
+color_bg1 = '#3c3836'
+color_bg3 = '#665c54'
+color_blue = '#7aa2f7'
+color_aqua = '#689d6a'
+color_green = '#98971a'
+color_orange = '#d65d0e'
+color_red = '#cc241d'
+color_yellow = '#d79921'
+
+
+[character]
+format ="""
+[╰─$symbol](fg:overlay1) """
+success_symbol = '[](fg:bold white)'
+error_symbol = '[](fg:bold red)'
+
+[directory]
+format ="[](fg:#7FB7FF)[ 󰉋 ](bg:#7FB7FF fg:#1A1B26)[](fg:#7FB7FF bg:#B4BEFE)[ $path ](bg:#B4BEFE fg:#151520)[](fg:#B4BEFE)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙"
+"Downloads" = ""
+"Music" = ""
+"Pictures" = ""
+
+[git_status]
+style = "fg:color_orange"
+format = '([$all_status]($style))'
+
+[time]
+disabled = false
+time_format = "%I.%M %p"
+style = "fg:color_blue"
+format = '[|]($style)[󱑒 $time]($style)'
+
+[kubernetes]
+disabled = false
+style = "fg:color_yellow"
+format = '( | [$context]($style)( in [$namespace]($style)))'
