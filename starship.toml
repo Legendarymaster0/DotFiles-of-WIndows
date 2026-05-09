@@ -1,4 +1,83 @@
+#███████╗████████╗ █████╗ ██████╗ ███████╗██╗  ██╗██╗██████╗ 
+#██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║  ██║██║██╔══██╗
+#███████╗   ██║   ███████║██████╔╝███████╗███████║██║██████╔╝
+#╚════██║   ██║   ██╔══██║██╔══██╗╚════██║██╔══██║██║██╔═══╝ 
+#███████║   ██║   ██║  ██║██║  ██║███████║██║  ██║██║██║     
+#╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝     
+                                                            
 format = """
+[╭──](blue)\
+[](blue)\
+[.](blue)\
+$time\
+[.](blue)\
+$directory\
+$cmd_duration\
+$all\
+$line_break\
+[╰─](blue)\
+$character\
+"""
+
+[username]
+format = "[$user](bold red)"
+show_always = false
+
+[hostname]
+format = "[$hostname](bold red)"
+ssh_only = false
+disabled = true
+
+[directory]
+format = "[\\[](blue)[$path](bold cyan)[\\]](blue)"
+truncation_length = 3
+truncate_to_repo = false
+
+[time]
+format = "[\\(](blue)[$time]( #F5E0DC)[\\)](blue)"
+time_format ="%d.%b.%Y|%I.%M %p" 
+disabled = false
+
+[cmd_duration]
+format = '[\[$duration\]]($style)'
+style = "bold blue"
+min_time = 1000
+
+[character]
+success_symbol = "[ ❯]( #89dceb)"
+error_symbol = "[x❯](bold red)"
+
+[python]
+format = '\[[󰌠 $version (\($virtualenv\))]($style)\]'
+style = 'bold #eaff64'
+
+[rust]
+format = '\[[󱘗 $version]($style)\]'
+style = 'bold teal'
+
+[git_branch]
+format = ' \[[$symbol$branch]($style) '
+symbol = ' '
+style = 'bold purple'
+
+[git_status]
+format = '[$all_status$ahead_behind]($style)\]'
+style = 'bold purple'
+conflicted = '🏳 '
+ahead = '⇡${count}'
+behind = '⇣${count}'
+diverged = '⇕'
+untracked = ''
+stashed = '󰏓'
+modified = ''
+staged = '✓'
+renamed = '⇢'
+deleted = '✘'
+
+[package]
+disabled = true
+[line_break]
+disabled = falseformat = """
 [╭](bold overlay1)-󱄅-\
 $directory\
 $git_branch\
