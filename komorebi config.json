@@ -1,0 +1,208 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/master/schema.json",
+  "app_specific_configuration_path": "$Env:KOMOREBI_CONFIG_HOME/applications.json",
+  "window_hiding_behaviour": "Hide",
+  "cross_monitor_move_behaviour": "Swap",
+  "default_workspace_padding": 20,
+  "default_container_padding": 10,
+  "transparency": true,
+  "transparency_alpha": 250,
+  "animation": {
+    "enabled": true,
+    "duration": 1050,
+    "fps": 120,
+    "style": {
+        "movement": "EaseInOutSine",
+        "transparency": "Linear"
+    }
+  },
+  "bar_configurations": [
+    "$Env:KOMOREBI_CONFIG_HOME/.config/komorebi/komorebi.bar.json",
+    "$Env:KOMOREBI_CONFIG_HOME/.config/komorebi/komorebi.bar.2.json"
+  ],
+
+ "border": true,
+ "border_implementation": "Komorebi",
+ "border_offset": -1,
+  
+  "border_width": 3,
+  "border_colours": {
+    "single": "#bbd0ff",
+    "stack": "#b8c0ff",
+    "monocle": "#c8b6ff",
+    "unfocused": "#ffd6ff"
+  },
+  "border_style": "Rounded",
+  "mouse_follows_focus": true,
+  "stackbar": {
+    "mode": "Never" 
+  },
+  "floating_window_aspect_ratio": "Widescreen",
+  "floating_applications": [
+    {
+      "kind": "Exe",
+      "id": "explorer.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "Motrix.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "ApplicationFrameHost.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "OneCommander.exe",
+      "matching_strategy": "Equals"
+    }
+  ],
+  "ignore_rules": [
+    {
+      "kind": "Exe",
+      "id": "ShareX.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "Arc extension popup",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "Files.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "TeraCopy.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "SnippingTool.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "Settings",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "Microsoft Store",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "FileBot",
+      "matching_strategy": "Equals"
+    }
+  ],
+  "monitors": [
+    {
+      "workspaces": [
+        {
+          "name": "I",
+          "layout": "BSP"
+        },
+        {
+          "name": "II",
+          "layout": "VerticalStack"
+        },
+        {
+          "name": "III",
+          "layout": "HorizontalStack"
+        },
+        {
+          "name": "IV",
+          "layout": "UltrawideVerticalStack"
+        },
+        {
+          "name": "V",
+          "layout": "Rows"
+        },
+        {
+          "name": "VI",
+          "layout": "Grid"
+        },
+        {
+          "name": "VII",
+          "layout": "RightMainVerticalStack"
+        }
+      ]
+    },
+    {
+      "workspaces": [ 
+        {
+          "name": "1",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            
+          ]
+        },
+        {
+          "name": "2",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "Steam",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "Minecraft Launcher",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "EpicGamesLauncher",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "Dolphin",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "3",
+          "layout": "VerticalStack",
+          "workspace_rules": [           
+            {
+              "kind": "Exe",
+              "id": "LINE",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "4",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "qbittorrent",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "Motrix",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "5",
+          "layout": "VerticalStack",
+          "workspace_rules": []
+        }
+      ]
+    }
+  ]
+}
