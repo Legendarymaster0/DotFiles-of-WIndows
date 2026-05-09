@@ -1,4 +1,11 @@
 {
+  "header1": " ___   _  _______  __   __  _______  ______    _______  _______  ___  ",
+  "header2": "|   | | ||       ||  |_|  ||       ||    _ |  |       ||  _    ||   | ",
+  "header3": "|   |_| ||   _   ||       ||   _   ||   | ||  |    ___|| |_|   ||   | ",
+  "header4": "|      _||  | |  ||       ||  | |  ||   |_||_ |   |___ |       ||   | ",
+  "header5": "|     |_ |  |_|  ||       ||  |_|  ||    __  ||    ___||  _   | |   | ",
+  "header6": "|    _  ||       || ||_|| ||       ||   |  | ||   |___ | |_|   ||   | ",
+  "header7": "|___| |_||_______||_|   |_||_______||___|  |_||_______||_______||___| ",
   "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/master/schema.json",
   "app_specific_configuration_path": "$Env:KOMOREBI_CONFIG_HOME/applications.json",
   "window_hiding_behaviour": "Hide",
