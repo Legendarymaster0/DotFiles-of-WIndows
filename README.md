@@ -68,7 +68,7 @@
    - Move `komorebi.json` to your `%USERPROFILE%`.
    - Place the `fastfetch` and `yasb` folders in `~/.config/`.
 3. **Execution**:
-   - Download the [Compiled EXE](https://github.com/Legendarymaster0/DotFiles-of-WIndows/releases).
+   - Download the [Compiled EXE](https://github.com/Legendarymaster0/DotFiles-of-WIndows/blob/main/autohotkey%20scripts/%20hyprland.exe).
    - Run the executable to initialize the environment.
 4. **Interface**: Press `Shift + \` to toggle the HUD.
 
