@@ -37,6 +37,13 @@
 </details>
 
 <details>
+
+## 🐧 The Illusion (Fastfetch)
+Hyprlands OS includes a custom-tuned Fastfetch configuration that replaces the standard Windows telemetry with a clean, Linux-inspired output.
+
+- **Custom ASCII**: A hand-crafted logo built with solid block characters (`█`).
+- **Spoofed Identity**: Reports as Arch Linux / Hyprland for the ultimate aesthetic.
+- **OS Age Tracking**: Integrated PowerShell logic to track installation longevity.  
 <summary><b>🎨 Aesthetics & UI</b> (Click to expand)</summary>
 
 - **Hyprland HUD:** Low-latency `Gui()` canvas using JetBrains Mono for system overlays.
