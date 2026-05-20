@@ -69,7 +69,11 @@
 | **AutoHotkey v2** | Scripting Engine | `Core` | [Website](https://www.autohotkey.com/v2/) |
 | **Fastfetch** | System Info | `Visual` | [GitHub](https://github.com/fastfetch-cli/fastfetch) |
 
----
+
+## 🚀 Wallpaper Engine Fix
+> [!NOTE]
+"Wallpaper Engine animations are fully working in this setup! I have bundled a pre-release build from YASB PR #920 that fixes the display scaling bug so you don't have to wait for the official release."
+
 
 ## 🛠️ Installation & Setup
 
