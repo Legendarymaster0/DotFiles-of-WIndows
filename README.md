@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Legendarymaster0/DotFiles-of-WIndows/main/Wallpaper/Hyprpaper.png" width="100%" alt="Hyprland HUD Banner" style="border-radius: 8px;">
-</p>
-
 <h1 align="center">❄️ Hyprland OS</h1>
 <p align="center">
   <b>Windows performance. Linux braincells.</b>
