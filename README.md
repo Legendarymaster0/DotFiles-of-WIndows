@@ -1,32 +1,39 @@
-<h1 align="center">❄️ Hyprland OS</h1>
+<div align="center">
+
+# ❄️ Hyprland OS
+
 <p align="center">
-  <b>Windows performance. Linux braincells.</b>
+  <strong>Windows performance. Linux braincells.</strong>
 </p>
 
 <p align="center">
-  A custom-tailored desktop environment combining Komorebi tiling, YASB status bars, and advanced AutoHotkey v2 logic layers to bring the ultimate Linux tiling aesthetic straight to Windows.
+  A premium, custom-tailored desktop environment combining Komorebi tiling, YASB status bars, and advanced AutoHotkey v2 logic layers to bring the ultimate Linux tiling aesthetic straight to Windows.
 </p>
 
-<p align="center">
-  <a href="#-gallery">Gallery</a> •
-  <a href="#-features">Features</a> •
-  <a href="#-components--ecosystem">Components</a> •
-  <a href="#-dependencies">Dependencies</a> •
-  <a href="#-installation--setup">Installation</a> •
-  <a href="#-keybindings">Keybindings</a> •
-  <a href="#-the-illusion">The Illusion</a> •
-  <a href="#-socials">Socials</a>
-</p>
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078d7.svg?style=flat-square&logo=windows)](https://www.microsoft.com/windows)
+[![Engine: AHK v2](https://img.shields.io/badge/Engine-AHK%20v2-green.svg?style=flat-square)](https://www.autohotkey.com/)
+
+---
+
+[🖼️ Gallery](#%EF%B8%8F-gallery) • 
+[✨ Features](#-features) • 
+[🔍 Components](#-components--ecosystem) • 
+[📦 Dependencies](#-dependencies) • 
+[🛠️ Installation](#%EF%B8%8F-installation--setup) • 
+[🚀 Wallpaper Fix](#-wallpaper-engine-fix)
+
+</div>
 
 ---
 
 ## 🖼️ Gallery
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Legendarymaster0/DotFiles-of-WIndows/main/Wallpaper/Hyprpaper.png" width="90%" alt="HUD Screenshot Preview" style="border-radius: 6px; border: 1px solid #313244;">
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Legendarymaster0/DotFiles-of-WIndows/main/Wallpaper/Hyprpaper.png" width="100%" alt="HUD Screenshot Preview" style="border-radius: 8px; border: 1px solid #313244; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
   <br>
-  <i>The custom JetBrains Mono HUD providing real-time keybinding references.</i>
-</p>
+  <p><i>The custom JetBrains Mono HUD providing real-time, low-latency keybinding references.</i></p>
+</div>
 
 ---
 
@@ -49,7 +56,7 @@
 
 | Component | Role | Description |
 | :--- | :--- | :--- |
-| 🧩 **Komorebi** | `The Tiling Engine` | Manages window layouts, dynamic positioning, and tiling behaviors. |
+| 🧩 **Komorebi** | `The Tiling WM` | Manages window layouts, dynamic positioning, and tiling behaviors. |
 | 📊 **YASB** | `The Status Bar` | Provides a highly customizable, widget-driven top bar for workspaces and system telemetry. |
 | ⚡ **Hyprland OS** | `The Logic Layer` | Custom AutoHotkey v2 scripts driving the HUD, auto-clicker, and advanced shortcuts. |
 | 🌐 **Zen Browser** | `The Web Portal` | A Firefox-based browser optimized for minimalist, keyboard-driven tiling layouts. |
@@ -63,7 +70,7 @@
 
 | Tool | Purpose | Status | Source |
 | :--- | :--- | :--- | :--- |
-| **Komorebi** | Tiling Manager | `Required` | [GitHub](https://github.com/LGUG2Z/komorebi) |
+| **Komorebi** | Tiling Manager| `Required` | [GitHub](https://github.com/LGUG2Z/komorebi) |
 | **YASB** | Status Bar | `Interface` | [GitHub](https://github.com/amnweb/yasb) |
 | **Zen Browser** | Web Browser | `Recommended` | [Website](https://www.zen-browser.app/) |
 | **AutoHotkey v2** | Scripting Engine | `Core` | [Website](https://www.autohotkey.com/v2/) |
@@ -73,19 +80,23 @@
 
 ## 🚀 Wallpaper Engine Fix
 
-> [!NOTE]
-> Wallpaper Engine animations are fully working in this setup! I have bundled a pre-release build from YASB PR #920 that fixes the display scaling bug so you don't have to wait for the official release.
+> [!TIP]
+> **Out-of-the-box support for display scaling!** > 
+> The current official release of YASB has a known display scaling bug (#917) that breaks Wallpaper Engine animations at 100% or 125% zoom. To save you the trouble of waiting, **I have bundled a pre-release installer compiled from YASB PR #920** directly into this setup. Animations work flawlessly out of the box!
 
 ---
 
 ## 🛠️ Installation & Setup
 
-### 1. Environment Setup
-Ensure **Komorebi** and **YASB** are installed on your machine and properly registered in your system environment variables.
+### 1️⃣ Environment Setup
+Ensure **Komorebi** and **YASB** are installed on your machine and properly registered in your system environment variables (`PATH`).
 
-### 2. Deploy Configurations
-Clone this repository and place the configuration files into their respective user directories:
+### 2️⃣ Deploy Configurations
+Clone this repository and place the configuration files into your respective user directories:
 
 ```bash
 # Clone the repository
 git clone [https://github.com/Legendarymaster0/DotFiles-of-WIndows.git](https://github.com/Legendarymaster0/DotFiles-of-WIndows.git)
+
+# Navigate to the setup directory
+cd DotFiles-of-WIndows
