@@ -92,8 +92,7 @@ Hyprlands OS includes a custom-tuned Fastfetch configuration that replaces the s
 
 <details>
 <summary><b>📝 Fluid Editing & Utility</b></summary>
-
-- **Alt + L**: Select Entire Line
+- **shift + left/right**: To select whole line 
 - **Alt + D**: Duplicate Line
 - **F9**: Toggle 10ms Auto-Clicker
 - **Middle-Click Title**: Close Window
