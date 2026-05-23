@@ -10,16 +10,16 @@
   "app_specific_configuration_path": "$Env:KOMOREBI_CONFIG_HOME/applications.json",
   "window_hiding_behaviour": "Hide",
   "cross_monitor_move_behaviour": "Swap",
-  "default_workspace_padding": 20,
-  "default_container_padding": 10,
+  "default_workspace_padding": 10,
+  "default_container_padding": 7,
   "transparency": true,
-  "transparency_alpha": 250,
+  "transparency_alpha": 200,
   "animation": {
     "enabled": true,
-    "duration": 1050,
+    "duration": 450,
     "fps": 120,
     "style": {
-        "movement": "EaseInOutSine",
+        "movement": "EaseOutExpo",
         "transparency": "Linear"
     }
   },
@@ -28,21 +28,22 @@
     "$Env:KOMOREBI_CONFIG_HOME/.config/komorebi/komorebi.bar.2.json"
   ],
 
- "border": true,
- "border_implementation": "Komorebi",
- "border_offset": -1,
+   "border": true,
+   "border_implementation": "Komorebi",
+   "border_offset": 0,
   
   "border_width": 3,
   "border_colours": {
-    "single": "#bbd0ff",
-    "stack": "#b8c0ff",
-    "monocle": "#c8b6ff",
-    "unfocused": "#ffd6ff"
+    "single": "#F1E3FF",
+    "stack": "#F4E87C",
+    "monocle": "#4E598C",
+    "unfocused": "#ff3399",
+    "floating": "#EBF38B"
   },
   "border_style": "Rounded",
-  "mouse_follows_focus": true,
+  "mouse_follows_focus": false,
   "stackbar": {
-    "mode": "Never" 
+    "mode": "Never" // never doesn't mean it's not on; just not showing within the wm
   },
   "floating_window_aspect_ratio": "Widescreen",
   "floating_applications": [
@@ -70,7 +71,7 @@
   "ignore_rules": [
     {
       "kind": "Exe",
-      "id": "ShareX.exe",
+      "id": "ShareX",
       "matching_strategy": "Equals"
     },
     {
@@ -113,32 +114,43 @@
     {
       "workspaces": [
         {
-          "name": "I",
+          "name": "1",
           "layout": "BSP"
         },
         {
-          "name": "II",
+          "name": "2",
+          "layout": "BSP"
+        },
+        {
+          "name": "3",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "^Code.exe$",
+              "matching_strategy": "Regex"
+            }
+          ]
+        },
+        {
+          "name": "4",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "RobloxPlayerBeta",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "destiny2",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "5",
           "layout": "VerticalStack"
-        },
-        {
-          "name": "III",
-          "layout": "HorizontalStack"
-        },
-        {
-          "name": "IV",
-          "layout": "UltrawideVerticalStack"
-        },
-        {
-          "name": "V",
-          "layout": "Rows"
-        },
-        {
-          "name": "VI",
-          "layout": "Grid"
-        },
-        {
-          "name": "VII",
-          "layout": "RightMainVerticalStack"
         }
       ]
     },
