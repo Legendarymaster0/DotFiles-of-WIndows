@@ -1,6 +1,13 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
+
 SetWorkingDir A_InitialWorkingDir
+
+ProcessSetPriority "Realtime"     ; Forces Windows kernel to prioritize hotkey intercepts
+A_MaxHotkeysPerInterval := 200     ; Prevents AHK warning flags during rapid layout shifts
+ListLines 0                       ; Disables line logging in memory to squeeze out maximum execution speed
+SendMode "Input"                  ; Forces raw Windows input stream injection for zero-latency typing
+
 ;          _             _                _            _            _       _    _          _            _              _    _        _   
 ;        / /\          /\_\             /\ \         /\ \         / /\    / /\ /\ \       /\ \         /\_\           /\ \ /\ \     /\_\ 
 ;       / /  \        / / /         _   \_\ \       /  \ \       / / /   / / //  \ \      \_\ \       / / /  _       /  \ \\ \ \   / / / 
@@ -16,6 +23,8 @@ SetWorkingDir A_InitialWorkingDir
 
 ; • HYPRLAND MOUSE RESIZE
 
+; • HYPRLAND MOUSE RESIZE (TRUE 8-ZONE DIRECTIONAL GRID)
+
 +RButton::
 {
     MouseGetPos(&mX, &mY, &WindowID)
@@ -24,23 +33,64 @@ SetWorkingDir A_InitialWorkingDir
     WinGetPos(&wX, &wY, &wW, &wH, "ahk_id " WindowID)
     WinActivate("ahk_id " WindowID)
     
+    ; Calculate mouse coordinates relative to the active window geometry
     relX := mX - wX
     relY := mY - wY
     
-    if (relX + relY < (wW + wH) / 2) {
-        PostMessage(0x0112, 0xF004, 0, , "ahk_id " WindowID)  ;Top-Left
-    } else {
-        PostMessage(0x0112, 0xF008, 0, , "ahk_id " WindowID)  ;Bottom-Right
+    ; Define edge threshold buffers (25% of window size for responsive targeting)
+    EdgeX := wW / 4
+    EdgeY := wH / 4
+    
+    ; Determine horizontal position zone
+    isLeft  := (relX < EdgeX)
+    isRight := (relX > wW - EdgeX)
+    
+    ; Determine vertical position zone
+    isTop    := (relY < EdgeY)
+    isBottom := (relY > wH - EdgeY)
+    
+    ; --- 8-ZONE VECTOR INTERCEPT ROUTING ---
+    if (isTop && isLeft) {
+        PostMessage(0x0112, 0xF004, 0, , "ahk_id " WindowID)  ; Top-Left Corner
+    } else if (isTop && isRight) {
+        PostMessage(0x0112, 0xF005, 0, , "ahk_id " WindowID)  ; Top-Right Corner
+    } else if (isBottom && isLeft) {
+        PostMessage(0x0112, 0xF007, 0, , "ahk_id " WindowID)  ; Bottom-Left Corner
+    } else if (isBottom && isRight) {
+        PostMessage(0x0112, 0xF008, 0, , "ahk_id " WindowID)  ; Bottom-Right Corner
+    } else if (isTop) {
+        PostMessage(0x0112, 0xF003, 0, , "ahk_id " WindowID)  ; Top Edge Only
+    } else if (isBottom) {
+        PostMessage(0x0112, 0xF006, 0, , "ahk_id " WindowID)  ; Bottom Edge Only
+    } else if (isLeft) {
+        PostMessage(0x0112, 0xF001, 0, , "ahk_id " WindowID)  ; Left Edge Only
+    } else if (isRight) {
+        PostMessage(0x0112, 0xF002, 0, , "ahk_id " WindowID)  ; Right Edge Only
     }
-    KeyWait "RButton"      ; Wait for you to let go of Right Click
-    Click "Left Up"        ; Simulate a Left-Up to "drop" the window and snap it
+    
+    KeyWait "RButton"      ; Keep tracking thread locked until right click release
+    Click "Left Up"        ; Force a drop sequence to snap the tiling alignment
+}
+
+
+; • HIGH-SPEED DAEMON PIPE INJECTION 
+
+KCmd(command) {
+    ; Connects directly to Komorebi's core memory pipe, bypassing file execution overhead entirely
+    if (pipe := DllCall("CreateFile", "Str", "\\.\pipe\komorebi", "UInt", 0x40000000, "UInt", 0, "Ptr", 0, "UInt", 3, "UInt", 0, "Ptr", 0, "Ptr")) != -1 {
+        DllCall("WriteFile", "Ptr", pipe, "AStr", command, "UInt", StrLen(command), "UInt*", 0, "Ptr", 0)
+        DllCall("CloseHandle", "Ptr", pipe)
+    } else {
+        ; Fallback to direct shell execution if daemon connection is busy
+        Run("komorebic.exe " command, , "Hide")
+    }
 }
 
 
 ; • SYSTEM & RELOAD
 
 !o::Reload()                                            
-!+o::Run("komorebic.exe reload-configuration", , "Hide")    
+!+o::KCmd("reload-configuration")    
 
 
 ; • APPS
@@ -52,64 +102,88 @@ SetWorkingDir A_InitialWorkingDir
 
 ; • WINDOW MANAGEMENT
 
-!+q::Run("komorebic.exe close", , "Hide")
-!+m::Run("komorebic.exe minimize", , "Hide")
+!+q::KCmd("close")
+!+m::KCmd("minimize")
 !f::
 {
-    Run("komorebic.exe toggle-float", , "Hide")
+    KCmd("toggle-float")
+    
+    ; Grab the handle of the monitor containing the mouse pointer
+    MonitorNum := DllCall("User32\MonitorFromPoint", "Int64", 0, "UInt", 2)
+    
+    ; Get workspace coordinates (excludes the Windows taskbar/YASB space)
+    NumPut("UInt", 40, buf := Buffer(40))
+    DllCall("User32\GetMonitorInfo", "Ptr", MonitorNum, "Ptr", buf)
+    
+    wLeft   := NumGet(buf, 20, "Int")
+    wTop    := NumGet(buf, 24, "Int")
+    wRight  := NumGet(buf, 28, "Int")
+    wBottom := NumGet(buf, 32, "Int")
+    wWidth  := wRight - wLeft
+    wHeight := wBottom - wTop
+
     WinGetPos(,, &wW, &wH, "A")
-    WinMove((A_ScreenWidth/2)-(wW/2), (A_ScreenHeight/2)-(wH/2),,, "A")
+    ; Perfectly center the floating window inside the current working area across all screen arrays
+    WinMove(wLeft + (wWidth/2) - (wW/2), wTop + (wHeight/2) - (wH/2),,, "A")
 }
-!+f::Run("komorebic.exe toggle-monocle", , "Hide")
-!q::Run("komorebic.exe retile", , "Hide")
-!p::Run("komorebic.exe toggle-pause", , "Hide")
 
 
 ; • FOCUS WINDOWS
 
-!Left::Run("komorebic.exe focus left", , "Hide")
-!Down::Run("komorebic.exe focus down", , "Hide")
-!Up::Run("komorebic.exe focus up", , "Hide")
-!Right::Run("komorebic.exe focus right", , "Hide")
-!+[::Run("komorebic.exe cycle-focus previous", , "Hide")
-!+]::Run("komorebic.exe cycle-focus next", , "Hide")
+!Left::KCmd("focus left")
+!Down::KCmd("focus down")
+!Up::KCmd("focus up")
+!Right::KCmd("focus right")
+!+[::KCmd("cycle-focus previous")
+!+]::KCmd("cycle-focus next")
 
 
 ; • MOVE WINDOWS
 
-!+Left::Run("komorebic.exe move left", , "Hide")
-!+Down::Run("komorebic.exe move down", , "Hide")
-!+Up::Run("komorebic.exe move up", , "Hide")
-!+Right::Run("komorebic.exe move right", , "Hide")
-!+Enter::Run("komorebic.exe promote", , "Hide")
+!+Left::KCmd("move left")
+!+Down::KCmd("move down")
+!+Up::KCmd("move up")
+!+Right::KCmd("move right")
+!+Enter::KCmd("promote")
 
 
 ; • RESIZE WINDOWS (AXIS)
 
-!=::Run("komorebic.exe resize-axis horizontal increase", , "Hide")
-!-::Run("komorebic.exe resize-axis horizontal decrease", , "Hide")
-!+=::Run("komorebic.exe resize-axis vertical increase", , "Hide")
-!+-::Run("komorebic.exe resize-axis vertical decrease", , "Hide")
+!=::KCmd("resize-axis horizontal increase")
+!-::KCmd("resize-axis horizontal decrease")
+!+=::KCmd("resize-axis vertical increase")
+!+-::KCmd("resize-axis vertical decrease")
 
 
 ; • LAYOUTS
 
-!x::Run("komorebic.exe flip-layout horizontal", , "Hide")
-!y::Run("komorebic.exe flip-layout vertical", , "Hide")
-!+x::Run("komorebic.exe cycle-layout next", , "Hide")
-!+y::Run("komorebic.exe cycle-layout previous", , "Hide")
+!x::KCmd("flip-layout horizontal")
+!y::KCmd("flip-layout vertical")
+!+x::KCmd("cycle-layout next")
+!+y::KCmd("cycle-layout previous")
+!+f::KCmd("toggle-monocle")
+!q::KCmd("retile")
+!p::KCmd("toggle-pause")
 
 
 ; • FOCUS WORKSPACES (0-7)
 
-!1::Run("komorebic.exe focus-workspace 0", , "Hide")
-!2::Run("komorebic.exe focus-workspace 1", , "Hide")
-!3::Run("komorebic.exe focus-workspace 2", , "Hide")
-!4::Run("komorebic.exe focus-workspace 3", , "Hide")
-!5::Run("komorebic.exe focus-workspace 4", , "Hide")
-!6::Run("komorebic.exe focus-workspace 5", , "Hide")
-!7::Run("komorebic.exe focus-workspace 6", , "Hide")
-!8::Run("komorebic.exe focus-workspace 7", , "Hide")
+!1::KCmd("focus-workspace 0")
+!2::KCmd("focus-workspace 1")
+!3::KCmd("focus-workspace 2")
+!4::KCmd("focus-workspace 3")
+!5::KCmd("focus-workspace 4")
+!6::KCmd("focus-workspace 5")
+!7::KCmd("focus-workspace 6")
+!8::KCmd("focus-workspace 7")
+
+
+; Yasb Logic
+
+!.::Run("yasbc start", , "Hide")
+!,::Run("yasbc stop", , "Hide")
+!/::Run("yasbc reload", , "Hide")
+
 
 
 ; Middle-Click on Title bar to Close Window
@@ -130,26 +204,23 @@ SetWorkingDir A_InitialWorkingDir
 
 ; • MOVE TO WORKSPACES (0-7)
 
-!+1::Run("komorebic.exe move-to-workspace 0", , "Hide")
-!+2::Run("komorebic.exe move-to-workspace 1", , "Hide")
-!+3::Run("komorebic.exe move-to-workspace 2", , "Hide")
-!+4::Run("komorebic.exe move-to-workspace 3", , "Hide")
-!+5::Run("komorebic.exe move-to-workspace 4", , "Hide")
-!+6::Run("komorebic.exe move-to-workspace 5", , "Hide")
-!+7::Run("komorebic.exe move-to-workspace 6", , "Hide")
-!+8::Run("komorebic.exe move-to-workspace 7", , "Hide")
+!+1::KCmd("move-to-workspace 0")
+!+2::KCmd("move-to-workspace 1")
+!+3::KCmd("move-to-workspace 2")
+!+4::KCmd("move-to-workspace 3")
+!+5::KCmd("move-to-workspace 4")
+!+6::KCmd("move-to-workspace 5")
+!+7::KCmd("move-to-workspace 6")
+!+8::KCmd("move-to-workspace 7")
 
 
-; • FLUID LINE SELECTORS & EDITING
+; • FLUID LINE SELECTORS & EDITING (GLOBAL)
 
 ; Select from cursor to end of line
 +Right::Send("+{End}")
 
 ; Select from cursor to start of line
 +Left::Send("+{Home}")
-
-; Select the ENTIRE line (No matter where cursor is)
-!l::Send("{Home}+{End}")
 
 ; Copy the ENTIRE line
 !c::Send("{Home}+{End}^c")
@@ -158,10 +229,11 @@ SetWorkingDir A_InitialWorkingDir
 !d::Send("{Home}+{End}^c{End}{Enter}^v")
 
 ; The "Line Obliterator" (Wipes the line and resets)
-!BackSpace::Send("{Home}+{End}{BackSpace}")
++BackSpace::Send("{Home}+{End}{BackSpace}")
 
 
 ; • AUTO-CLICKER (F9 Toggle)
+
 #MaxThreadsPerHotkey 2
 f9::
 {
@@ -178,14 +250,39 @@ f9::
         SetTimer(DoTheClick, 0)
     }
 }
-
 DoTheClick()
 {
-    Click
+if GetKeyState("Shift", "P") 
+        Click "Right"
+    else if GetKeyState("Ctrl", "P") 
+        Click "Middle"
+    else
+        Click
 }
 
-; • My own gui ( Alt+\ Toggle)
-+\::
+; • OverLord Bio
+!F4::
+{
+    ; Spawns your personal bio landing page directly inside Default Browser
+    Run("https://linktr.ee/Hyprlands")
+}
+
+
+; Alt + V: Paste as Plain Text (Clean Code)
+
+$^v::
+{
+    if DllCall("IsClipboardFormatAvailable", "UInt", 1) ; CF_TEXT guard clause
+    {
+        A_Clipboard := A_Clipboard ; Strips formatting safely
+    }
+    Send "^v"
+}
+
+
+; • My own gui ( Win+\ Toggle)
+
+#\::
 {
     static MyGui := 0
     if (MyGui) {
@@ -195,7 +292,7 @@ DoTheClick()
     }
 
     ; --- Configuration ---
-    BgColor := "11111b"    ; Dark Tokyo Night style background
+    BgColor := "11111b"    ; Hyprland style background
     TextColor := "c0caf5"  ; Soft white/blue text
     AccentColor := "00d1ff" ; Your signature Cyan
 
@@ -221,22 +318,22 @@ DoTheClick()
     s .= "Alt + F : Toggle Floating Mode`n"
     s .= "Alt + Shift + F : Toggle Monocle (Fullscreen)`n`n"
 
-    s .= "• NAVIGATION & WORKSPACES`n"
+    s .= "• NAVIGATION / WORKSPACES`n"
     s .= "Alt + [Arrow Keys] : Focus Window`n"
     s .= "Alt + [1-8] : Switch to Workspace (0-7)`n"
     s .= "Alt + Shift + [1-8] : Move Window to Workspace`n`n"
     
     s .= "• FLUID LINE EDITING`n"
     s .= "Shift + L/R: Select to Start/End`n"
-    s .= "Alt + L : Select Line`n"
     s .= "Alt + C : Copy Line`n"
     s .= "Alt + D : Duplicate Line`n"
-    s .= "Alt + BackSpace : Obliterate Line"
+    s .= "Alt + BackSpace : Obliterate Line`n"
+    s .= "Alt + F4 : Bio of Overlord"
 
     MyGui.Add("Text", "w450", s)
     
     MyGui.SetFont("c" . AccentColor . " s9")
-    MyGui.Add("Text", "Center w450", "`n[ Press Shift + \ again to close ]")
+    MyGui.Add("Text", "Center w450", "[ Press 🪟 + \ again to close ]")
 
     MyGui.Show("Center")
 }
