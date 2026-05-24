@@ -10,6 +10,244 @@
   "app_specific_configuration_path": "$Env:KOMOREBI_CONFIG_HOME/applications.json",
   "window_hiding_behaviour": "Hide",
   "cross_monitor_move_behaviour": "Swap",
+  "default_workspace_padding": 15,
+  "default_container_padding": 4,
+  "transparency": true,
+  "transparency_alpha": 200,
+  "animation": {
+    "enabled": true,
+    "duration": 450,
+    "fps": 120,
+    "style": {
+        "movement": "EaseOutExpo",
+        "transparency": "Linear"
+    }
+  },
+  "bar_configurations": [
+    "$Env:KOMOREBI_CONFIG_HOME/.config/komorebi/komorebi.bar.json",
+    "$Env:KOMOREBI_CONFIG_HOME/.config/komorebi/komorebi.bar.2.json"
+  ],
+
+   "border": true,
+   "border_implementation": "Komorebi",
+   "border_offset": 0,
+  
+  "border_width": 3,
+  "border_colours": {
+    "single": "#F1E3FF",
+    "stack": "#F4E87C",
+    "monocle": "#4E598C",
+    "unfocused": "#ff3399",
+    "floating": "#EBF38B"
+  },
+  "border_style": "Rounded",
+  "mouse_follows_focus": false,
+  "stackbar": {
+    "mode": "Never" // never doesn't mean it's not on; just not showing within the wm
+  },
+  "floating_window_aspect_ratio": "Widescreen",
+  "floating_applications": [
+    {
+      "kind": "Exe",
+      "id": "explorer.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "Motrix.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "ApplicationFrameHost.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "OneCommander.exe",
+      "matching_strategy": "Equals"
+    }
+  ],
+  "ignore_rules": [
+    {
+      "kind": "Exe",
+      "id": "ShareX",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "Arc extension popup",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "Files.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "TeraCopy.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "SnippingTool.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "Settings",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "Microsoft Store",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "FileBot",
+      "matching_strategy": "Equals"
+    }
+  ],
+  "monitors": [
+    {
+      "workspaces": [
+        {
+          "name": "1",
+          "layout": "BSP"
+        },
+        {
+          "name": "2",
+          "layout": "Columns"
+        },
+        {
+          "name": "3",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "^Code.exe$",
+              "matching_strategy": "Regex"
+            }
+          ]
+        },
+        {
+          "name": "4",
+          "layout": "UltrawideVerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "RobloxPlayerBeta",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "destiny2",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "5",
+          "layout": "RightMainVerticalStack"
+        },
+        {
+          "name": "6",
+          "layout": "Grid"
+        },
+        {
+          "name": "7",
+          "layout": "Rows"
+        },
+        {
+          "name": "8",
+          "layout": "Scrolling"
+        }
+      ]
+    },
+    {
+      "workspaces": [ 
+        {
+          "name": "1",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            
+          ]
+        },
+        {
+          "name": "2",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "Steam",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "Minecraft Launcher",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "EpicGamesLauncher",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "Dolphin",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "3",
+          "layout": "VerticalStack",
+          "workspace_rules": [           
+            {
+              "kind": "Exe",
+              "id": "LINE",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "4",
+          "layout": "VerticalStack",
+          "workspace_rules": [
+            {
+              "kind": "Exe",
+              "id": "qbittorrent",
+              "matching_strategy": "Equals"
+            },
+            {
+              "kind": "Exe",
+              "id": "Motrix",
+              "matching_strategy": "Equals"
+            }
+          ]
+        },
+        {
+          "name": "5",
+          "layout": "VerticalStack",
+          "workspace_rules": []
+        }
+      ]
+    }
+  ]
+}{
+  "header1": " ___   _  _______  __   __  _______  ______    _______  _______  ___  ",
+  "header2": "|   | | ||       ||  |_|  ||       ||    _ |  |       ||  _    ||   | ",
+  "header3": "|   |_| ||   _   ||       ||   _   ||   | ||  |    ___|| |_|   ||   | ",
+  "header4": "|      _||  | |  ||       ||  | |  ||   |_||_ |   |___ |       ||   | ",
+  "header5": "|     |_ |  |_|  ||       ||  |_|  ||    __  ||    ___||  _   | |   | ",
+  "header6": "|    _  ||       || ||_|| ||       ||   |  | ||   |___ | |_|   ||   | ",
+  "header7": "|___| |_||_______||_|   |_||_______||___|  |_||_______||_______||___| ",
+  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/master/schema.json",
+  "app_specific_configuration_path": "$Env:KOMOREBI_CONFIG_HOME/applications.json",
+  "window_hiding_behaviour": "Hide",
+  "cross_monitor_move_behaviour": "Swap",
   "default_workspace_padding": 10,
   "default_container_padding": 7,
   "transparency": true,
