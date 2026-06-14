@@ -2,9 +2,9 @@
 
 # ❄️ Hyprland OS
 
-<p align="center">
+<div align="center">
   <strong>Windows performance. Linux braincells.</strong>
-</p>
+</div>
 
 <p align="center">
   A premium, custom-tailored desktop environment combining Komorebi tiling, YASB status bars, and advanced AutoHotkey v2 logic layers to bring the ultimate Linux tiling aesthetic straight to Windows.
@@ -20,8 +20,7 @@
 [✨ Features](#-features) • 
 [🔍 Components](#-components--ecosystem) • 
 [📦 Dependencies](#-dependencies) • 
-[🛠️ Installation](#%EF%B8%8F-installation--setup) • 
-[🚀 Wallpaper Fix](#-wallpaper-engine-fix)
+[🛠️ Installation](#%EF%B8%8F-installation--setup)
 
 </div>
 
@@ -75,14 +74,6 @@
 | **Zen Browser** | Web Browser | `Recommended` | [Website](https://www.zen-browser.app/) |
 | **AutoHotkey v2** | Scripting Engine | `Core` | [Website](https://www.autohotkey.com/v2/) |
 | **Fastfetch** | System Info | `Visual` | [GitHub](https://github.com/fastfetch-cli/fastfetch) |
-
----
-
-## 🚀 Wallpaper Engine Fix
-
-> [!TIP]
-> **Out-of-the-box support for display scaling!** > 
-> The current official release of YASB has a known display scaling bug (#917) that breaks Wallpaper Engine animations at 100% or 125% zoom. To save you the trouble of waiting, **I have bundled a pre-release installer compiled from YASB PR #920** directly into this setup. Animations work flawlessly out of the box!
 
 ---
 
