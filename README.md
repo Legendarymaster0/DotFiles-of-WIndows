@@ -30,8 +30,6 @@
 
 <div align="center">
   <img src="https://github.com/Legendarymaster0/DotFiles-of-WIndows/blob/base/Config/Wallpaper/Hyprpaper.png" width="100%" style="border-radius: 8px; border: 1px solid #313244; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-  <br>
-  <p><i>The custom JetBrains Mono HUD providing real-time, low-latency keybinding references.</i></p>
 </div>
 
 ---
