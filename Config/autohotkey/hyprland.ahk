@@ -746,19 +746,19 @@ class HUDConsoleEngine {
         HUDConsoleEngine.EngineInstance.SetFont("s10 w900 c" . TextColor, "JetBrains Mono") 
         
         logBlob := ""
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [KERNEL]  :: Priority Profile Mapped", "REALTIME") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [WIN32]   :: Interop Hook Engine (WM_COPYDATA)", "ACTIVE") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [IPC BUS] :: Named Daemon Pipe Connection Opened", "ESTABLISHED") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [CONFIG]  :: Running natively inside RAM allocation", "MEMORY") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [HOOKS]   :: Low-level OS WinEvent 0x8000 Engine", "ATTACHED") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [REFLECT] :: Compiling internal runtime class API", "COMPLETE") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [KERNEL]  :: Priority Profile Mapped", "(REALTIME)") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [WIN32]   :: Interop Hook Engine (WM_COPYDATA)", "(ACTIVE)") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [IPC BUS] :: Named Daemon Pipe Connection Opened", "(ESTABLISHED)") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [CONFIG]  :: Running natively inside RAM allocation", "(MEMORY)") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [HOOKS]   :: Low-level OS WinEvent 0x8000 Engine", "(ATTACHED)") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [REFLECT] :: Compiling internal runtime class API", "(COMPLETE)") . "`n`n"
         logBlob .= HUDConsoleEngine.FormatLogLine("  [MODULES] :: Bootstrapping framework CoreStateEngine", "ONLINE") . "`n`n"
         logBlob .= HUDConsoleEngine.FormatLogLine("  [PLUGINS] :: Registered -> ClipboardLoggerPlugin", "(Active)") . "`n`n"
         logBlob .= HUDConsoleEngine.FormatLogLine("  [PLUGINS] :: Registered -> WindowRulesEnginePlugin", "(Active)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [DIR_COM] :: Win32 Shell Automation File Router", "ONLINE") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [METRICS] :: SelfDescribingPlatformAPI Mapper", "STABLE") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [ENV_TARGET] :: Active Shell Hook Terminal Context", "wt.exe") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [VIEWPORT]   :: Default Application Hyper-Browser", "zen.exe")
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [DIR_COM] :: Win32 Shell Automation File Router", "(ONLINE)") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [METRICS] :: SelfDescribingPlatformAPI Mapper", "(STABLE)") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [ENV_TARGET] :: Active Shell Hook Terminal Context", "") . "`n`n"
+        logBlob .= HUDConsoleEngine.FormatLogLine("  [VIEWPORT]   :: Default Application Hyper-Browser", "")
         
         HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y120 w540 r26 +Background", logBlob)
 
