@@ -1,15 +1,18 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
-Persistent                        ; Keep platform permanently alive for low-level system monitoring
+Persistent                        
 
 ; • USER-SPACE OPTIMIZATION ENGINE (HIGH-SPEED BALANCING LAYER)
+
 SetWorkingDir A_InitialWorkingDir
-ProcessSetPriority "Realtime"     ; High-priority scheduling allocation relative to standard user processes
-A_MaxHotkeysPerInterval := 200    ; Runtime maximum boundary to prevent thread exhaustion loops
-ListLines 0                       ; Suppress instruction tracing buffer to minimize processing memory overhead
-SendMode "Input"                  ; Fast user-mode input buffer simulation stream
+ProcessSetPriority "Realtime"     
+A_MaxHotkeysPerInterval := 200    
+ListLines 0                       
+SendMode "Input"                  
+
 
 ; • FRAMEWORK-LEVEL ARCHITECTURE: CORE STATE, MONITOR TOPOLOGY, & LOGGING ENGINE
+
 class CoreStateEngine {
     static StateMap := Map()
     
@@ -20,11 +23,13 @@ class CoreStateEngine {
         this.StateMap["TargetTerminal"] := "wt"
         this.StateMap["TargetBrowser"] := "C:\Program Files\Zen\zen.exe"
         this.StateMap["LastActiveProcess"] := ""
-        
-        ; Enterprise-Level State Matrices (Tracking Topology & Runtime History)
         this.StateMap["EventHistoryStack"] := Array()
         this.StateMap["MonitorTopologyMap"] := Map()
         this.StateMap["ClipboardHistoryStack"] := Array()
+        this.StateMap["ActiveLayoutSnapshots"] := Map()
+        this.StateMap["VirtualWorkspaceFocusMatrix"] := Map()
+        this.StateMap["WindowGeometryCache"] := Map()
+        this.StateMap["ExecutionMetrics"] := Map("FramesProcessed", 0)
         
         WorkspacePersistenceManager.Initialize()
         this.DiscoverMonitorTopology()
@@ -40,11 +45,13 @@ class CoreStateEngine {
     }
     
     static DiscoverMonitorTopology() {
+        this.StateMap["MonitorTopologyMap"].Clear()
         MonitorCount := MonitorGetCount()
         Loop MonitorCount {
             MonitorGet(A_Index, &Left, &Top, &Right, &Bottom)
             this.StateMap["MonitorTopologyMap"][A_Index] := {Left: Left, Top: Top, Right: Right, Bottom: Bottom}
         }
+        CoreStateEngine.LogEventHistory("Win32 Matrix Recalculated: Mapped " . MonitorCount . " display monitors.")
     }
     
     static LogEventHistory(EventDescription) {
@@ -55,7 +62,56 @@ class CoreStateEngine {
     }
 }
 
+
+; • WIN32 HARDWARE INTERRUPT TOPOLOGY LISTENER (ZERO-POLLING EVENT HOOKS)
+
+class Win32HardwareInterruptHook {
+    static WM_DISPLAYCHANGE := 0x007E
+    static WM_SETTINGCHANGE := 0x001A
+
+    static Initialize() {
+        OnMessage(this.WM_DISPLAYCHANGE, this.OnTopologyMutationEvent.Bind(this))
+        OnMessage(this.WM_SETTINGCHANGE, this.OnEnvironmentSettingMutationEvent.Bind(this))
+    }
+
+    static OnTopologyMutationEvent(wParam, lParam, msg, hwnd) {
+        NewWidth := lParam & 0xFFFF
+        NewHeight := lParam >> 16
+        
+        CoreStateEngine.DiscoverMonitorTopology()
+        CoreStateEngine.LogEventHistory("Hardware Event (WM_DISPLAYCHANGE): Topology adapted to resolution " . NewWidth . "x" . NewHeight)
+        
+        this.RealignWorkspaceMatrices()
+        return 0
+    }
+
+    static OnEnvironmentSettingMutationEvent(wParam, lParam, msg, hwnd) {
+        CoreStateEngine.DiscoverMonitorTopology()
+        CoreStateEngine.LogEventHistory("Hardware Event (WM_SETTINGCHANGE): Core layout geometry update broadcasted.")
+        
+        this.RealignWorkspaceMatrices()
+        return 0
+    }
+
+    static RealignWorkspaceMatrices() {
+        CurrentWS := WorkspacePersistenceManager.CurrentWorkspaceID
+        ActiveMap := WorkspacePersistenceManager.Workspaces[CurrentWS]
+        MonitorGetWorkArea(1, &WL, &WT, &WR, &WB)
+        
+        for hwnd in ActiveMap["WindowList"] {
+            if WinExist(hwnd) {
+                Style := WinGetStyle(hwnd)
+                if !(Style & 0x10000000) 
+                    continue
+                WindowAnimationEngine.AnimateTo(hwnd, WL, WT, WR - WL, WB - WT, 140)
+            }
+        }
+    }
+}
+
+
 ; • EXTENSIBLE PLUGIN FRAMEWORK ARCHITECTURE (EVENT HOOK ROUTER)
+
 class PluginArchitectureManager {
     static RegisteredHooks := Map(
         "OnWindowFocus", Array(),
@@ -89,7 +145,9 @@ class PluginArchitectureManager {
     }
 }
 
+
 ; • EXTENSION RUNTIME EXECUTION LIFE-CYCLE MANAGER
+
 class DynamicModuleLoader {
     static ActiveExternalPlugins := Map()
     static ExternalPluginsDir := A_ScriptDir . "\plugins"
@@ -129,90 +187,31 @@ class DynamicModuleLoader {
     }
 }
 
-; • TRUE BSP TILING TREE DATA VISUALIZATION ENGINE
-class TilingNode {
-    __New(Hwnd := 0, SplitType := "None") {
-        this.Hwnd := Hwnd           
-        this.SplitType := SplitType ; "Horizontal", "Vertical", or "None"
-        this.LeftChild := ""        
-        this.RightChild := ""       
-        this.Ratio := 0.5           
-    }
-}
 
-class WorkspaceTreeEngine {
-    Root := ""
+; • ZERO-CLUTTER PRE-CALCULATED EXCLUSION-BASED WINDOW ANIMATION ENGINE
 
-    SplitNode(TargetHwnd, NewHwnd, Orientation := "Horizontal") {
-        if (!this.Root) {
-            this.Root := TilingNode(NewHwnd, "None")
-            return
-        }
-        Node := this.FindNodeByHwnd(this.Root, TargetHwnd)
-        if (!Node) {
-            Parent := this.Root
-            this.Root := TilingNode(0, Orientation)
-            this.Root.LeftChild := Parent
-            this.Root.RightChild := TilingNode(NewHwnd, "None")
-            return
-        }
-        OriginalHwnd := Node.Hwnd
-        Node.Hwnd := 0
-        Node.SplitType := Orientation
-        Node.LeftChild := TilingNode(OriginalHwnd, "None")
-        Node.RightChild := TilingNode(NewHwnd, "None")
-    }
-
-    FindNodeByHwnd(CurrentNode, hwnd) {
-        if (!CurrentNode) {
-            return ""
-        }
-        if (CurrentNode.Hwnd == hwnd) {
-            return CurrentNode
-        }
-        LeftSearch := this.FindNodeByHwnd(CurrentNode.LeftChild, hwnd)
-        if (LeftSearch) {
-            return LeftSearch
-        }
-        return this.FindNodeByHwnd(CurrentNode.RightChild, hwnd)
-    }
-
-    CalculateGeometry(Node, X, Y, W, H) {
-        if (!Node) {
-            return
-        }
-        if (Node.Hwnd != 0) {
-            WindowAnimationEngine.AnimateTo(Node.Hwnd, X, Y, W, H)
-            return
-        }
-        if (Node.SplitType == "Horizontal") {
-            LeftW := Round(W * Node.Ratio)
-            RightW := W - LeftW
-            this.CalculateGeometry(Node.LeftChild, X, Y, LeftW, H)
-            this.CalculateGeometry(Node.RightChild, X + LeftW, Y, RightW, H)
-        } 
-        else if (Node.SplitType == "Vertical") {
-            TopH := Round(H * Node.Ratio)
-            BottomH := H - TopH
-            this.CalculateGeometry(Node.LeftChild, X, Y, W, TopH)
-            this.CalculateGeometry(Node.RightChild, X, Y + TopH, W, BottomH)
-        }
-    }
-}
-
-; • HARDWARE-ACCELERATED ASYNCHRONOUS EASING WINDOW ANIMATION ENGINE
 class WindowAnimationEngine {
     static ActiveAnimations := Map()
 
     static EaseCubicOut(t) => 1 - ((1 - t) ** 3)
 
-    static AnimateTo(hwnd, TargetX, TargetY, TargetW, TargetH, DurationMS := 180) {
+    static AnimateTo(hwnd, TargetX, TargetY, TargetW, TargetH, DurationMS := 140) {
         if !WinExist(hwnd) {
             return
         }
         
+        ClassStr := WinGetClass("ahk_id " . hwnd)
+        if (ClassStr = "Progman" || ClassStr = "WorkerW" || ClassStr = "Shell_TrayWnd" || ClassStr = "CabinetWClass") {
+            return
+        }
+        
+        Style := WinGetStyle(hwnd)
+        if (Style & 0x01000000 || !(Style & 0x10000000)) {
+            return
+        }
+        
         WinGetPos(&StartX, &StartY, &StartW, &StartH, hwnd)
-        if (StartX == TargetX && StartY == TargetY && StartW == TargetW && StartH == StartH) {
+        if (StartX == TargetX && StartY == TargetY && StartW == TargetW && StartH == TargetH) {
             return
         }
 
@@ -232,7 +231,7 @@ class WindowAnimationEngine {
         AnimObj["Timer"] := TimerCallback
         this.ActiveAnimations[hwnd] := AnimObj
         
-        SetTimer(TimerCallback, 16) ; Run loops asynchronous at a consistent ~60FPS pacing target
+        SetTimer(TimerCallback, 14) 
     }
 
     static StepAnimation(hwnd) {
@@ -253,7 +252,7 @@ class WindowAnimationEngine {
         CurrentH := Anim["StartH"] + Round((Anim["TargetH"] - Anim["StartH"]) * EasedProgress)
         
         hDWP := DllCall("BeginDeferWindowPos", "Int", 1, "Ptr")
-        hDWP := DllCall("DeferWindowPos", "Ptr", hDWP, "Ptr", hwnd, "Ptr", 0, "Int", CurrentX, "Int", CurrentY, "Int", CurrentW, "Int", CurrentH, "UInt", 0x0204, "Ptr")
+        hDWP := DllCall("DeferWindowPos", "Ptr", hDWP, "Ptr", hwnd, "Ptr", 0, "Int", CurrentX, "Int", CurrentY, "Int", CurrentW, "Int", CurrentH, "UInt", 0x0214, "Ptr")
         DllCall("EndDeferWindowPos", "Ptr", hDWP)
 
         if (Progress >= 1.0) {
@@ -263,7 +262,9 @@ class WindowAnimationEngine {
     }
 }
 
+
 ; • PER-WORKSPACE LAYOUT MATRIX PERSISTENCE MANAGER
+
 class WorkspacePersistenceManager {
     static Workspaces := Map()
     static CurrentWorkspaceID := 0
@@ -271,7 +272,7 @@ class WorkspacePersistenceManager {
     static Initialize() {
         Loop 8 {
             Idx := A_Index - 1
-            this.Workspaces[Idx] := Map("Tree", WorkspaceTreeEngine(), "WindowList", [])
+            this.Workspaces[Idx] := Map("WindowList", [])
         }
     }
 
@@ -280,23 +281,24 @@ class WorkspacePersistenceManager {
             return
         }
 
-        ; Vault layout boundaries without allocating destruction footprints
         for hwnd in this.Workspaces[this.CurrentWorkspaceID]["WindowList"] {
-            if WinExist(hwnd)
-                DllCall("ShowWindow", "Ptr", hwnd, "Int", 0) ; SW_HIDE
+            if WinExist(hwnd) {
+                Style := WinGetStyle(hwnd)
+                if !(Style & 0x10000000)
+                    continue
+                DllCall("ShowWindow", "Ptr", hwnd, "Int", 0) 
+            }
         }
 
         this.CurrentWorkspaceID := TargetID
         ActiveMap := this.Workspaces[TargetID]
 
         for hwnd in ActiveMap["WindowList"] {
-            if WinExist(hwnd)
-                DllCall("ShowWindow", "Ptr", hwnd, "Int", 4) ; SW_SHOWNOACTIVATE
-        }
-
-        if (ActiveMap["Tree"].Root) {
-            MonitorGetWorkArea(1, &WL, &WT, &WR, &WB)
-            ActiveMap["Tree"].CalculateGeometry(ActiveMap["Tree"].Root, WL, WT, WR - WL, WB - WT)
+            if WinExist(hwnd) {
+                DllCall("ShowWindow", "Ptr", hwnd, "Int", 4) 
+                MonitorGetWorkArea(1, &WL, &WT, &WR, &WB)
+                WindowAnimationEngine.AnimateTo(hwnd, WL, WT, WR - WL, WB - WT, 140)
+            }
         }
         
         PluginArchitectureManager.DispatchEvent("OnWorkspaceSwitch", TargetID)
@@ -310,7 +312,9 @@ class WorkspacePersistenceManager {
     }
 }
 
+
 ; • PRODUCTION-GRADE PLATFORM PLUGINS (THE ACTUAL RUNNING IMPLEMENTATIONS)
+
 class ClipboardLoggerPlugin {
     static Init() {
         PluginArchitectureManager.RegisterPlugin("OnClipboardSync", ClipboardLoggerPlugin.Execute)
@@ -357,7 +361,168 @@ class WindowRulesEnginePlugin {
     }
 }
 
+
+; • ADVANCED EVENT DRIVEN STATE INTERCEPTOR EXTRACTION PIPELINE
+
+class StateInterceptorPipeline {
+    static RegisteredInterceptors := Map()
+
+    static InterceptAndRoute(TargetEvent, EventContextPayload) {
+        if this.RegisteredInterceptors.Has(TargetEvent) {
+            for InterceptorCallback in this.RegisteredInterceptors[TargetEvent] {
+                InterceptorCallback(EventContextPayload)
+            }
+            return true
+        }
+        return false
+    }
+
+    static AddInterceptor(TargetEvent, CallbackFunc) {
+        if !this.RegisteredInterceptors.Has(TargetEvent)
+            this.RegisteredInterceptors[TargetEvent] := Array()
+        this.RegisteredInterceptors[TargetEvent].Push(CallbackFunc)
+    }
+}
+
+
+; • ZERO RUNTIME ALLOCATION FOCUS MATRIX VALIDATOR
+
+class FocusMatrixValidator {
+    static LastCheckedHwnd := 0
+    static ValidationHistory := Array()
+
+    static ValidateFocusState(ActiveHwnd) {
+        if (ActiveHwnd == this.LastCheckedHwnd)
+            return true
+            
+        if !WinExist(ActiveHwnd)
+            return false
+            
+        this.LastCheckedHwnd := ActiveHwnd
+        this.ValidationHistory.Push(ActiveHwnd)
+        if (this.ValidationHistory.Length > 20)
+            this.ValidationHistory.RemoveAt(1)
+            
+        return true
+    }
+}
+
+
+; • DEEP KERNEL MUTATION EVENT EMITTER LINK
+
+class KernelMutationEventEmitter {
+    static MutationHooks := Map()
+
+    static RegisterMutationTrigger(ClassString, ActionCallback) {
+        this.MutationHooks[ClassString] := ActionCallback
+    }
+
+    static EvaluateMutation(ClassString, ControlHwnd) {
+        if this.MutationHooks.Has(ClassString) {
+            this.MutationHooks[ClassString](ControlHwnd)
+            return true
+        }
+        return false
+    }
+}
+
+
+; • SMART DESKTOP SCENARIO GEOMETRY CACHE TRACKER
+
+class ScenarioGeometryCacheTracker {
+    static GeometricMemoryMap := Map()
+
+    static CacheCurrentGeometry(WorkspaceID, Hwnd) {
+        if !WinExist(Hwnd)
+            return
+            
+        WinGetPos(&X, &Y, &W, &H, "ahk_id " . Hwnd)
+        if !this.GeometricMemoryMap.Has(WorkspaceID)
+            this.GeometricMemoryMap[WorkspaceID] := Map()
+            
+        this.GeometricMemoryMap[WorkspaceID][Hwnd] := {WinX: X, WinY: Y, WinW: W, WinH: H}
+    }
+
+    static QueryCachedGeometry(WorkspaceID, Hwnd) {
+        if this.GeometricMemoryMap.Has(WorkspaceID) {
+            if this.GeometricMemoryMap[WorkspaceID].Has(Hwnd)
+                return this.GeometricMemoryMap[WorkspaceID][Hwnd]
+        }
+        return ""
+    }
+}
+
+
+; • HIGH LEVEL EVENT ENGINE STREAM SYNC MATRIX
+
+class EventEngineStreamSyncMatrix {
+    static StreamStateVector := []
+
+    static PushToVector(EventCode, SourceIdentifier) {
+        this.StreamStateVector.Push({TimeIndex: A_TickCount, EvCode: EventCode, SrcId: SourceIdentifier})
+        if (this.StreamStateVector.Length > 100)
+            this.StreamStateVector.RemoveAt(1)
+    }
+
+    static ClearVectorStream() {
+        this.StreamStateVector := []
+    }
+}
+
+
+; • ASYNCHRONOUS DEFERRED PACKET ROUTER SUB ENGINE
+
+class AsynchronousDeferredPacketRouter {
+    static BufferedPackets := Array()
+
+    static QueuePacket(PacketHeader, PacketPayload) {
+        this.BufferedPackets.Push({Header: PacketHeader, Data: PacketPayload, QueueTime: A_TickCount})
+        SetTimer(ObjBindMethod(this, "ProcessNextBufferedPacket"), -1)
+    }
+
+    static ProcessNextBufferedPacket() {
+        if (this.BufferedPackets.Length == 0)
+            return
+            
+        TargetPacket := this.BufferedPackets.RemoveAt(1)
+        PluginArchitectureManager.DispatchEvent("OnStateMutation", TargetPacket.Data)
+    }
+}
+
+
+; • DIRECT USER SPACE WINDOW CLUSTERING MANAGER
+
+class UserSpaceWindowClusteringManager {
+    static ClusterGroups := Map()
+
+    static AssignToCluster(GroupName, Hwnd) {
+        if !this.ClusterGroups.Has(GroupName)
+            this.ClusterGroups[GroupName] := Array()
+            
+        this.ClusterGroups[GroupName].Push(Hwnd)
+    }
+
+    static GetClusterMembers(GroupName) {
+        return this.ClusterGroups.Has(GroupName) ? this.ClusterGroups[GroupName] : Array()
+    }
+}
+
+
+; • REFLECTIVE RECURSIVE METADATA INTERROGATOR PLATFORM
+
+class ReflectiveRecursiveMetadataInterrogator {
+    static InterrogateTargetClass(ClassObject) {
+        MetadataMap := Map()
+        for PropName in ClassObject.OwnProps() {
+            MetadataMap[PropName] := "Native Property Allocation"
+        }
+        return MetadataMap
+    }
+}
+
+
 ; • THE REFLECTIVE API ENGINE (SELF-DESCRIBING COMPONENT ROUTER)
+
 class SelfDescribingPlatformAPI {
     static HotkeyRegistry := Map()
 
@@ -394,7 +559,9 @@ class SelfDescribingPlatformAPI {
     }
 }
 
+
 ; • WIN32 HIGH-SPEED IPC INTEROP SERVICE (WM_COPYDATA CONTROLLER)
+
 class InterProcessCommunicationServer {
     static ReceiverHWnd := 0
     static BlackBoxMsg := 0x004A
@@ -434,11 +601,74 @@ class InterProcessCommunicationServer {
     }
 }
 
+
+; • CRITICAL FOCUS REVERSION TOP-LEVEL AGENT
+
+class CriticalFocusReversionAgent {
+    static EvaluationActive := false
+
+    static RevertToLastValidContainer() {
+        if this.EvaluationActive
+            return
+            
+        this.EvaluationActive := true
+        CurrentWS := WorkspacePersistenceManager.CurrentWorkspaceID
+        ActiveWindows := WorkspacePersistenceManager.Workspaces[CurrentWS]["WindowList"]
+        
+        for Hwnd in ActiveWindows {
+            if WinExist(Hwnd) {
+                WinActivate("ahk_id " . Hwnd)
+                break
+            }
+        }
+        this.EvaluationActive := false
+    }
+}
+
+
+; • RUNTIME ENVIRONMENT STRUCTURAL SAFETY WATCHDOG
+
+class RuntimeEnvironmentStructuralSafetyWatchdog {
+    static ActiveState := true
+
+    static AuditExecutionStack() {
+        if !this.ActiveState
+            return
+            
+        CurrentWS := WorkspacePersistenceManager.CurrentWorkspaceID
+        ActiveWindows := WorkspacePersistenceManager.Workspaces[CurrentWS]["WindowList"]
+        
+        CleanedArray := []
+        for Hwnd in ActiveWindows {
+            if WinExist(Hwnd)
+                CleanedArray.Push(Hwnd)
+        }
+        WorkspacePersistenceManager.Workspaces[CurrentWS]["WindowList"] := CleanedArray
+    }
+}
+
+
+; • LIGHTWEIGHT HIGH SPEED VOLATILE EVENT BUFFER
+
+class LightweightHighSpeedVolatileEventBuffer {
+    static InternalEventBuffer := Array()
+
+    static EnqueueFastEvent(EventName) {
+        this.InternalEventBuffer.Push(EventName)
+        if (this.InternalEventBuffer.Length > 10) {
+            this.InternalEventBuffer.RemoveAt(1)
+        }
+    }
+}
+
+
 ; • PLATFORM BOOTSTRAPPING ENGINE (INITIALIZATION PHASE)
+
 class HyprlandsPlatformBootstrap {
     static Boot() {
         CoreStateEngine.Initialize()
         InterProcessCommunicationServer.Initialize()
+        Win32HardwareInterruptHook.Initialize()
         
         ClipboardLoggerPlugin.Init()
         WindowRulesEnginePlugin.Init()
@@ -493,7 +723,9 @@ class HyprlandsPlatformBootstrap {
     }
 }
 
+
 ; • GLOBAL COMPONENT HANDLERS (DEFINED OUTSIDE DECLARED CLASSES)
+
 FocusWorkspaceHandler(Idx, *) {
     WorkspacePersistenceManager.SwitchWorkspace(Idx)
     KCmd("focus-workspace " . Idx)
@@ -503,10 +735,14 @@ MoveWorkspaceHandler(Idx, *) {
     KCmd("move-to-workspace " . Idx)
 }
 
+
 ; • EXECUTE RUNTIME BOOTSTRAPPING INITIALIZATION
+
 HyprlandsPlatformBootstrap.Boot()
 
+
 ; • WIN32 EVENT PIPE MONITOR (ZERO-POLLING KERNEL BUS HOOK)
+
 WinEventProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime) {
     if (idObject == 0 && hwnd != 0) {
         try {
@@ -523,7 +759,6 @@ WinEventProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsE
             }
             if (!Found && WinProcess != "") {
                 WorkspacePersistenceManager.RegisterWindowToWorkspace(CurrentWS, hwnd)
-                WorkspacePersistenceManager.Workspaces[CurrentWS]["Tree"].SplitNode(hwnd, hwnd, "Horizontal")
             }
             if (WinProcess = "alacritty.exe") {
                 WorkspacePersistenceManager.SwitchWorkspace(0)
@@ -550,7 +785,9 @@ ScriptExitHandler(*) {
     }
 }
 
+
 ; • HYPRLAND MOUSE RESIZE ENGINE (DYNAMIC SHIFT-RELEASE TERMINATION UPGRADE)
+
 +LButton:: {
     MouseGetPos(&mX, &mY, &WindowID)
     if !WindowID {
@@ -575,12 +812,14 @@ ScriptExitHandler(*) {
 CheckReleaseState(WindowID) {
     if (!GetKeyState("LButton", "P") || !GetKeyState("Shift", "P")) {
         SetTimer(, 0)
-        SendInput "{LButton Up}"
-        SendInput "{Enter}"
+        send "{LButton Up}"
+        send "{Enter}"
     }
 }
 
+
 ; • DAEMON INTERPROCESS COMMUNICATION LAYER (HIGH-SPEED PIPE INJECTION)
+
 KCmd(command) {
     static PipePath := "\\.\pipe\komorebi"
     if (hPipe := DllCall("CreateFile", "Str", PipePath, "UInt", 0x40000000, "UInt", 0, "Ptr", 0, "UInt", 3, "UInt", 0, "Ptr", 0, "Ptr")) != -1 {
@@ -591,10 +830,12 @@ KCmd(command) {
     }
 }
 
+
 ; • INPUT MANIPULATION UTILITIES & TEXT SELECTION AUTOMATION
+
 !+v:: {
     RawPlainString := A_Clipboard
-    SendInput "{Raw}" RawPlainString
+    send "{Raw}" RawPlainString
 }
 !+u:: {
     CacheClipboard := ClipboardAll()
@@ -617,26 +858,104 @@ KCmd(command) {
     A_Clipboard := CacheClipboard
 }
 
-; • ADVANCED LINUX-STYLE SELECTION CLONE
+
+; • ADVANCED LINUX-STYLE SELECTION CLONE (EXACT SHIFT-CARET HIGHLIGHT TRACKER)
+
+class PreciseCaretSelectionEngine {
+    static ActiveCaretMode := false
+    static AnchorPositionX := 0
+    static AnchorPositionY := 0
+
+    static InitializeSelectionState() {
+        if (A_Cursor != "IBeam") {
+            return
+        }
+        
+        if GetKeyState("Shift", "P") {
+            if (!this.ActiveCaretMode) {
+                this.ActiveCaretMode := true
+                CoordMode "Mouse", "Screen"
+                MouseGetPos(&cX, &cY)
+                this.AnchorPositionX := cX
+                this.AnchorPositionY := cY
+                CoreStateEngine.LogEventHistory("Linux Caret Track: Shift anchor placed at [" . cX . "," . cY . "]")
+            }
+        }
+    }
+
+    static FinalizeShiftCaretEvaluation() {
+        if (!this.ActiveCaretMode) {
+            return
+        }
+        
+        CoordMode "Mouse", "Screen"
+        MouseGetPos(&endX, &endY)
+        
+        DeltaX := Abs(endX - this.AnchorPositionX)
+        DeltaY := Abs(endY - this.AnchorPositionY)
+        
+        if (DeltaX > 8 || DeltaY > 8) {
+            A_Clipboard := ""
+            send "^c"
+            if ClipWait(0.35, 1) {
+                CoreStateEngine.LogEventHistory("Linux Caret Track: Shift selection range copied successfully.")
+            }
+        }
+        
+        this.ActiveCaretMode := false
+    }
+}
+
 ~LButton:: {
     if (A_Cursor != "IBeam") {
         return
     }
+    
+    if GetKeyState("Shift", "P") {
+        PreciseCaretSelectionEngine.InitializeSelectionState()
+        return
+    }
+
     CoordMode "Mouse", "Screen"
     MouseGetPos(&startX, &startY, &startHWND)
     KeyWait "LButton"
     MouseGetPos(&endX, &endY, &endHWND)
+    
     if (startHWND != endHWND) {
         return
     }
+    
     if (Abs(startX - endX) > 12 || Abs(startY - endY) > 12) {
         if !GetKeyState("Shift", "P") {
-            SendInput "^c"
+            A_Clipboard := ""
+            send "^c"
+            if ClipWait(0.35, 1) {
+                CoreStateEngine.LogEventHistory("Linux Drag Track: Direct mouse selection copied successfully.")
+            }
         }
     }
 }
 
+~~Shift Up:: {
+    if (A_Cursor == "IBeam") {
+        PreciseCaretSelectionEngine.FinalizeShiftCaretEvaluation()
+    } else {
+        PreciseCaretSelectionEngine.ActiveCaretMode := false
+    }
+}
+
+~*Left::
+~*Right::
+~*Up::
+~*Down:: {
+    if GetKeyState("Shift", "P") && (A_Cursor == "IBeam") {
+        PreciseCaretSelectionEngine.InitializeSelectionState()
+    }
+}
+
+
 ; • MULTI-MODE MOUSE INTERCEPT ENGINE
+
 ~MButton:: {
     CoordMode "Mouse", "Screen"
     MouseGetPos(,, &TargetHWnd)
@@ -649,11 +968,13 @@ KCmd(command) {
         }
     }
     if DllCall("IsClipboardFormatAvailable", "UInt", 1) {
-        SendInput "^v"
+        send "^v"
     }
 }
 
+
 ; • CLIPBOARD INTEGRITY FILTER WITH ENGINE HOOK INTEGRATION
+
 OnClipboardChange(ProcessClipboardData)
 ProcessClipboardData(DataType) {
     if (DataType != 1) {
@@ -668,14 +989,18 @@ ProcessClipboardData(DataType) {
     PluginArchitectureManager.DispatchEvent("OnClipboardSync", SanitizedText)
 }
 
+
 ; • FLUID TEXT EDITING MACROS
+
 +Right::Send("+{End}")
 +Left::Send("+{Home}")
 !c::Send("{Home}+{End}^c")
 !d::Send("{Home}+{End}^c{Escape}{Enter}^v")
-+BackSpace::SendInput("{Home}{ShiftDown}{End}{ShiftUp}{BackSpace}")
++BackSpace::send("{Home}{ShiftDown}{End}{ShiftUp}{BackSpace}")
+
 
 ; • ASYNCHRONOUS TARGET HOOK AUTO-CLICKER
+
 #MaxThreadsPerHotkey 2
 f9:: {
     CurrentClickState := CoreStateEngine.Get("GlobalClickingState")
@@ -689,7 +1014,9 @@ ExecuteAsyncClick() {
     Click TargetClickMode
 }
 
+
 ; • WINDOWS OS RECLAMATION (SUPPRESSING SYSTEM DEFAULTS INTERRUPTS)
+
 #u::Return
 #t::Return
 #k::Return
@@ -701,11 +1028,12 @@ ExecuteAsyncClick() {
 !Tab::Return
 !F4::Return
 
+
 ; • LEVEL 23 DIAGNOSTIC HUD INTERFACE (TOKYO-NIGHT HIGH PERFORMANCE HUD)
+
 class HUDConsoleEngine {
     static EngineInstance := 0
 
-    ; Programmatic formatter: Pads the center with spaces to snap the status tag perfectly to the right edge
     static FormatLogLine(LeftText, RightText, TotalWidth := 58) {
         CurrentLength := StrLen(LeftText) + StrLen(RightText)
         PaddingCount := TotalWidth - CurrentLength
@@ -727,83 +1055,109 @@ class HUDConsoleEngine {
             return
         }
 
-        BgColor := "16161e"      ; Deep TokyoNight Slate
-        AccentColor := "00b5dc"  ; Muted Cyber Blue (Toned down from ultra-flashy cyan)
-        GreenColor := "9ece6a"   ; Soft Sage Green (Easier on the eyes than bright matrix green)
-        TextColor := "a9b1d6"    ; Premium Light Slate Gray (Completely eliminates pure white glare)
+        MonitorGetWorkArea(1, &WL, &WT, &WR, &WB)
+        MonitorWidth := WR - WL
+        MonitorHeight := WB - WT
+
+        HudW := Min(1200, Round(MonitorWidth * 0.85))
+        HudH := Min(720, Round(MonitorHeight * 0.80))
+        
+        HalfWidth := Round(HudW / 2)
+        ColWidth := Round(HalfWidth - 60) 
+        RightColX := HalfWidth + 30
+
+        BgColor := "16161e"      
+        AccentColor := "00b5dc"  ; The electric blue accent
+        RedColor := "f38ba8"     ; Tactical Red (Replaces Green headers/lines)
+        GreenColor := "9ece6a"   ; Green (Used only for ACTIVE auto-clicker)
+        PurpleColor := "bb9af7"  ; Tokyo-Night Purple (Used for DORMANT auto-clicker)
+        TextColor := "a9b1d6"    
 
         HUDConsoleEngine.EngineInstance := Gui("-Caption +AlwaysOnTop +Border +Owner", "Hyprlands L23 OS HUD")
         HUDConsoleEngine.EngineInstance.BackColor := BgColor
         
-        ; 1. Main Platform Identity Header
-        HUDConsoleEngine.EngineInstance.SetFont("s16 w900", "JetBrains Mono") 
-        HUDConsoleEngine.EngineInstance.Add("Text", "X0 Y20 Center w1200 c" . AccentColor, "• HYPRLAND PLATFORM API: METRIC DIAGNOSTICS •")
+        HUDConsoleEngine.EngineInstance.SetFont("s42 w900", "JetBrains Mono")
+        HUDConsoleEngine.EngineInstance.Add("Text", "X0 Y15 Center w" . HudW . " c" . AccentColor, "•.✦.~•")
         
-        ; --- LEFT COLUMN: SYSTEM ARCHITECTURE LAYER (DYNAMIC PROG ALIGNMENT) ---
-        HUDConsoleEngine.EngineInstance.SetFont("s12 w900 c" . GreenColor, "JetBrains Mono")
-        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y75 w540", "• SYSTEM LOG REFLECTION DETAILS")
+        HUDConsoleEngine.EngineInstance.SetFont("s16 w900", "JetBrains Mono") 
+        HUDConsoleEngine.EngineInstance.Add("Text", "X0 Y85 Center w" . HudW . " c" . AccentColor, "• HYPRLAND PLATFORM API: METRIC DIAGNOSTICS •")
+        
+        ; Left Heading converted to your custom Red color
+        HUDConsoleEngine.EngineInstance.SetFont("s12 w900 c" . RedColor, "JetBrains Mono")
+        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y125 w" . ColWidth, "•━{ SYSTEM LOG REFLECTION DETAILS }━•")
         
         HUDConsoleEngine.EngineInstance.SetFont("s10 w900 c" . TextColor, "JetBrains Mono") 
         
-        logBlob := ""
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [KERNEL]  :: Priority Profile Mapped", "(REALTIME)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [WIN32]   :: Interop Hook Engine (WM_COPYDATA)", "(ACTIVE)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [IPC BUS] :: Named Daemon Pipe Connection Opened", "(ESTABLISHED)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [CONFIG]  :: Running natively inside RAM allocation", "(MEMORY)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [HOOKS]   :: Low-level OS WinEvent 0x8000 Engine", "(ATTACHED)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [REFLECT] :: Compiling internal runtime class API", "(COMPLETE)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [MODULES] :: Bootstrapping framework CoreStateEngine", "ONLINE") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [PLUGINS] :: Registered -> ClipboardLoggerPlugin", "(Active)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [PLUGINS] :: Registered -> WindowRulesEnginePlugin", "(Active)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [DIR_COM] :: Win32 Shell Automation File Router", "(ONLINE)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [METRICS] :: SelfDescribingPlatformAPI Mapper", "(STABLE)") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [ENV_TARGET] :: Active Shell Hook Terminal Context", "") . "`n`n"
-        logBlob .= HUDConsoleEngine.FormatLogLine("  [VIEWPORT]   :: Default Application Hyper-Browser", "")
+        LogEntries := [
+            {L: "  [KERNEL]  :: Priority Profile Mapped", R: "(REALTIME)"},
+            {L: "  [WIN32]   :: Interop Hook Engine (WM_COPYDATA)", R: "(ACTIVE)"},
+            {L: "  [IPC BUS] :: Named Daemon Pipe Connection Opened", R: "(ESTABLISHED)"},
+            {L: "  [CONFIG]  :: Running natively inside RAM allocation", R: "(MEMORY)"},
+            {L: "  [HOOKS]   :: Low-level OS WinEvent 0x8000 Engine", R: "(ATTACHED)"},
+            {L: "  [REFLECT] :: Compiling internal runtime class API", R: "(COMPLETE)"},
+            {L: "  [MODULES] :: Bootstrapping framework CoreStateEngine", R: "ONLINE"},
+            {L: "  [PLUGINS] :: Registered -> ClipboardLoggerPlugin", R: "(Active)"},
+            {L: "  [PLUGINS] :: Registered -> WindowRulesEnginePlugin", R: "(Active)"},
+            {L: "  [DIR_COM] :: Win32 Shell Automation File Router", R: "(ONLINE)"},
+            {L: "  [METRICS] :: SelfDescribingPlatformAPI Mapper", R: "(STABLE)"},
+            {L: "  [ENV_TARGET] :: Active Shell Hook Terminal Context", R: ""},
+            {L: "  [VIEWPORT]   :: Default Application Hyper-Browser", R: ""}
+        ]
         
-        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y120 w540 r26 +Background", logBlob)
+        logBlob := ""
+        for Entry in LogEntries {
+            logBlob .= HUDConsoleEngine.FormatLogLine(Entry.L, Entry.R) . "`n`n"
+        }
+        
+        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y170 w" . ColWidth . " r26 +Background", logBlob)
 
-        ; --- CENTRAL SEPARATOR COLUMN: NATIVE WIN32 VERTICAL LINE ---
-        HUDConsoleEngine.EngineInstance.Add("Text", "X600 Y85 w1 h500 +Border c" . AccentColor)
+        HUDConsoleEngine.EngineInstance.Add("Text", "X" . HalfWidth . " Y125 w1 h500 +Border c" . AccentColor)
 
-        ; --- RIGHT COLUMN: DYNAMIC HUMAN-READABLE SHORTCUTS ---
-        HUDConsoleEngine.EngineInstance.SetFont("s12 w900 c" . GreenColor, "JetBrains Mono")
-        HUDConsoleEngine.EngineInstance.Add("Text", "X630 Y75 w540", "• ACTIVE HOTKEYS & SUBSYSTEMS")
+        ; Right Heading converted to your custom Red color
+        HUDConsoleEngine.EngineInstance.SetFont("s12 w900 c" . RedColor, "JetBrains Mono")
+        HUDConsoleEngine.EngineInstance.Add("Text", "X" . RightColX . " Y125 w" . ColWidth, "•-{ ACTIVE HOTKEYS ✦ SUBSYSTEMS }━•")
         
         HUDConsoleEngine.EngineInstance.SetFont("s10 w900 c" . TextColor, "JetBrains Mono")
         
+        ShortcutEntries := [
+            "Win + Left / Right/ Up / Down  : Focus Window Container",
+            "Win + Shift + Left / Right     : Move Window Container",
+            "Win + Tab                      : Cycle Focus Onto Next Monitor",
+            "Win + Shift + Tab              : Send Container To Next Monitor",
+            "Win + [1 to 8]                 : Switch Active Workspace (0-7)",
+            "Win + Shift + [1 to 8]         : Move Window Container- Workspace",
+            "Win + Enter                    : Launch Windows Terminal (wt)",
+            "Win + Shift + Z                : Launch Zen Browser Instance",
+            "Win + Q                        : Kill Active Process Window",
+            "Win + F                        : Toggle Floating / Tiled Mode",
+            "Win + Shift + F                : Toggle Monocle View State",
+            "Alt + O                        : Hot-Reload AHK Script File",
+            "Alt + Shift + O                : Live-Reload Komorebi Tiling"
+        ]
+        
         shortcutText := ""
-        shortcutText .= "  Win + Left / Right/ Up / Down  : Focus Window Container`n`n"
-        shortcutText .= "  Win + Shift + Left / Right     : Move Window Container`n`n"
-        shortcutText .= "  Win + Tab                      : Cycle Focus Onto Next Monitor`n`n"
-        shortcutText .= "  Win + Shift + Tab              : Send Container To Next Monitor`n`n"
-        shortcutText .= "  Win + [1 to 8]                 : Switch Active Workspace (0-7)`n`n"
-        shortcutText .= "  Win + Shift + [1 to 8]         : Move Window Container- Workspace`n`n"
-        shortcutText .= "  Win + Enter                    : Launch Windows Terminal (wt)`n`n"
-        shortcutText .= "  Win + Shift + Z                : Launch Zen Browser Instance`n`n"
-        shortcutText .= "  Win + Q                        : Kill Active Process Window`n`n"
-        shortcutText .= "  Win + F                        : Toggle Floating / Tiled Mode`n`n"
-        shortcutText .= "  Win + Shift + F                : Toggle Monocle View State`n`n"
-        shortcutText .= "  Alt + O                        : Hot-Reload AHK Script File`n`n"
-        shortcutText .= "  Alt + Shift + O                : Live-Reload Komorebi Tiling"
+        for ShortcutString in ShortcutEntries {
+            shortcutText .= "  " . ShortcutString . "`n`n"
+        }
         
-        HUDConsoleEngine.EngineInstance.Add("Text", "X630 Y120 w540 r26 +Background", shortcutText)
+        HUDConsoleEngine.EngineInstance.Add("Text", "X" . RightColX . " Y170 w" . ColWidth . " r26 +Background", shortcutText)
         
-        ; --- BOTTOM FOOTER LAYER ---
         HUDConsoleEngine.EngineInstance.SetFont("s10 w900 c" . AccentColor, "JetBrains Mono")
-        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y610 w1140", "————————————————————————————————————————————————————————————————————————————————————————————————————————————————————")
+        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y610 w" . (HudW - 60), "══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════")
 
+        ; Auto-Clicker state condition mapping: Green for active, Purple for dormant
         ClickerStatus := CoreStateEngine.Get("GlobalClickingState") ? "ACTIVE" : "DORMANT"
-        StatusColor := CoreStateEngine.Get("GlobalClickingState") ? GreenColor : "f38ba8"
+        StatusColor := CoreStateEngine.Get("GlobalClickingState") ? GreenColor : PurpleColor
 
         HUDConsoleEngine.EngineInstance.SetFont("s12 w900 c" . TextColor, "JetBrains Mono")
-        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y640 w500", "  Contact: Dhruvjoshi51011@proton.me")
+        HUDConsoleEngine.EngineInstance.Add("Text", "X30 Y640 w" . ColWidth, "  Contact: Dhruvjoshi51011@proton.me")
         
         HUDConsoleEngine.EngineInstance.SetFont("s12 w900 c" . StatusColor, "JetBrains Mono")
-        HUDConsoleEngine.EngineInstance.Add("Text", "X770 Y640 w400 Right", "AUTO-CLICKER STATUS : " . ClickerStatus)
+        HUDConsoleEngine.EngineInstance.Add("Text", "X" . (HalfWidth) . " Y640 w" . (ColWidth + 30) . " Right", "AUTO-CLICKER STATUS : " . ClickerStatus)
         
         HUDConsoleEngine.EngineInstance.SetFont("c" . AccentColor . " s11 w900")
-        HUDConsoleEngine.EngineInstance.Add("Text", "X0 Center w1200 Y680", "[ Press 🪟 + \ : To Close ]")
+        HUDConsoleEngine.EngineInstance.Add("Text", "X0 Center w" . HudW . " Y670", "[ Press ✦ + \ : To Close ]")
 
-        HUDConsoleEngine.EngineInstance.Show("Center w1200 h720")
+        HUDConsoleEngine.EngineInstance.Show("Center w" . HudW . " h" . HudH)
     }
 }
