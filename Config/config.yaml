@@ -1,0 +1,278 @@
+watch_config_changes: True
+
+enable_logging: True
+
+rendering_backend: V2
+
+global:
+
+  border_width: 3
+  border_offset: 0
+  border_radius: Auto
+
+  border_z_order: AboveWindow
+
+  follow_native_border: True
+
+  initialize_delay: 200
+  unminimize_delay: 150
+
+  active_color:
+    colors: ["#4E598C", "#330033"]
+    direction: 60deg
+
+  inactive_color:
+    colors: ["#ff3399", "##330033"]
+    direction: 45deg
+
+  komorebi_colors:
+    stack_color: "#F4E87C"
+    monocle_color: "#4E598C"
+    floating_color: "#EBF38B"
+    enabled: True
+
+  animations:
+    active:
+      - type: ReverseSpiral
+        duration: 1800
+        easing: Linear
+
+      - type: Fade
+        duration: 200
+        easing: EaseInOutQuad
+
+    inactive:
+      - type: Fade
+        duration: 200
+        easing: EaseInOutQuad
+
+    fps: 60
+    enabled: True
+
+  effects:
+    active:
+      - type: Shadow
+        radius: 2.0
+        opacity: 1.0
+        translation:
+          x: 0
+          y: 0
+
+      - type: Glow
+        radius: 8.0
+        opacity: 1.0
+
+    inactive:
+      - type: Shadow
+        radius: 2.0
+        opacity: 1.0
+        translation:
+          x: 0
+          y: 0
+
+      - type: Glow
+        radius: 8.0
+        opacity: 1.0
+
+    enabled: False
+
+# Per-application configuration overrides
+window_rules:
+  # First, aggressively exclude all known desktop/system windows
+  # These are the most likely culprits for full-screen borders
+  - match: Class
+    name: "WorkerW"
+    enabled: False
+
+  - match: Class
+    name: "Progman"
+    enabled: False
+
+  - match: Class
+    name: "Shell_TrayWnd"
+    enabled: False
+
+  - match: Class
+    name: "Button"
+    enabled: False
+
+  # Additional Windows desktop window classes
+  - match: Class
+    name: "Shell_SecondaryTrayWnd"
+    enabled: False
+
+  - match: Class
+    name: "Windows.UI.Core.CoreWindow"
+    enabled: False
+
+  # Exclude empty title windows (often desktop) - try multiple strategies
+  - match: Title
+    name: ""
+    enabled: False
+
+  - match: Title
+    name: "^$"
+    strategy: Regex
+    enabled: False
+
+  # Note: We can't exclude all explorer.exe as that would break File Explorer borders
+  # Instead, we rely on class-based exclusions above
+
+  - match: Class
+    name: "XamlExplorerHostIslandWindow"
+    enabled: False
+
+  - match: Process
+    name: "tacky-borders"
+    enabled: False
+
+  - match: Process
+    name: "zebar"
+    enabled: False
+
+  # Exclude Seelen UI windows (window manager that might create full-screen borders)
+  - match: Process
+    name: "seelen-ui"
+    enabled: False
+
+  - match: Title
+    name: ".Seelen"
+    strategy: Contains
+    enabled: False
+
+  - match: Title
+    name: "Seelen"
+    strategy: Contains
+    enabled: False
+
+  - match: Title
+    name: "komorebi-bar"
+    enabled: False
+
+  - match: Title
+    name: "keyviz"
+    enabled: False
+
+  - match: Title
+    name: "Picture-in-Picture"
+    enabled: False
+
+  # Exclude Rainmeter (desktop customization tool)
+  - match: Process
+    name: "Rainmeter"
+    enabled: False
+
+  # Exclude Everywhere.Windows (might create overlay windows)
+  - match: Process
+    name: "Everywhere.Windows"
+    enabled: False
+
+  # Exclude desktop window and system windows - try multiple strategies
+  - match: Class
+    name: "WorkerW"
+    enabled: False
+
+  - match: Class
+    name: "WorkerW"
+    strategy: Contains
+    enabled: False
+
+  - match: Class
+    name: "Progman"
+    enabled: False
+
+  - match: Class
+    name: "Progman"
+    strategy: Contains
+    enabled: False
+
+  - match: Class
+    name: "Shell_TrayWnd"
+    enabled: False
+
+  - match: Class
+    name: "Button"
+    enabled: False
+
+  - match: Class
+    name: "Shell_SecondaryTrayWnd"
+    enabled: False
+
+  # Try matching with Contains strategy for variations
+  - match: Class
+    name: "Worker"
+    strategy: Contains
+    enabled: False
+
+  - match: Class
+    name: "Shell"
+    strategy: Contains
+    enabled: False
+
+  # Exclude windows with empty titles (often desktop/system windows)
+  # Try both exact match and regex
+  - match: Title
+    name: ""
+    enabled: False
+
+  - match: Title
+    name: "^$"
+    strategy: Regex
+    enabled: False
+
+  # Exclude DWM (Desktop Window Manager) related windows
+  - match: Class
+    name: "Dwm"
+    strategy: Contains
+    enabled: False
+
+  - match: Process
+    name: "dwm"
+    enabled: False
+
+  - match: Process
+    name: "winlogon"
+    enabled: False
+
+  - match: Process
+    name: "csrss"
+    enabled: False
+
+  # Try to exclude any window with very large dimensions (likely screen-sized)
+  # Note: This might need to be adjusted based on your screen resolution
+  - match: Title
+    name: "Program Manager"
+    enabled: False
+
+  - match: Title
+    name: "Desktop"
+    enabled: False
+
+  # Additional desktop-related exclusions
+  - match: Title
+    name: "Desktop"
+    strategy: Contains
+    enabled: False
+
+  # Try excluding by matching common desktop window patterns
+  - match: Class
+    name: "^WorkerW$"
+    strategy: Regex
+    enabled: False
+
+  - match: Class
+    name: "^Progman$"
+    strategy: Regex
+    enabled: False
+
+  # Exclude any window class that starts with Worker or contains WorkerW
+  - match: Class
+    name: "^Worker"
+    strategy: Regex
+    enabled: False
+
+  - match: Process
+    name: "WindowsTerminal"
+    active_color: "#ff3399"
+    inactive_color: "#ff3399"
+    enabled: True
